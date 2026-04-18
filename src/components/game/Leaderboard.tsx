@@ -17,8 +17,8 @@ export function Leaderboard({
     );
   }
   return (
-    <div className="w-full max-w-xs space-y-1.5">
-      <h3 className="text-sm font-bold text-foreground">🏆 Top 10 mondial</h3>
+    <div className="w-full max-w-sm space-y-2 rounded-2xl border border-border/50 bg-card/60 p-3 backdrop-blur">
+      <h3 className="text-base font-extrabold text-foreground">🏆 Classement mondial</h3>
       <ol className="space-y-1">
         {scores.map((s, i) => {
           const highlighted = i === highlightIndex;
