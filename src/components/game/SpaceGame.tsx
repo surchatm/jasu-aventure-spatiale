@@ -216,11 +216,12 @@ export function SpaceGame() {
       let newItem: FallingItem | null = null;
       if (Math.random() < spawnChance) {
         const r = Math.random();
+        const allCaught = caughtIdsRef.current.size >= 7;
         let kind: ItemKind;
         if (r < 0.5) kind = "star";
         else if (r < 0.82) kind = "asteroid";
         else if (r < 0.92) kind = "rainbow";
-        else if (r < 0.997) kind = "shield";
+        else if (r < 0.997 || allCaught) kind = "shield";
         else kind = "pokeball"; // ~0.3% of spawns → ~1 per 45-60s
         idRef.current += 1;
         newItem = {
