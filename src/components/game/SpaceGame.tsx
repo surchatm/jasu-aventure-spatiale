@@ -377,8 +377,8 @@ export function SpaceGame() {
 
         {/* Start overlay */}
         {phase === "start" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-background/70 p-6 text-center backdrop-blur-sm">
-            <div className="text-6xl animate-float-slow">🚀</div>
+          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/70 p-6 text-center backdrop-blur-sm">
+            <div className="text-5xl animate-float-slow">🚀</div>
             <h2 className="text-2xl font-extrabold text-foreground">Prêt, astronaute ?</h2>
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li>⭐ Attrape les étoiles pour marquer</li>
@@ -386,7 +386,6 @@ export function SpaceGame() {
               <li>🌈 Arc-en-ciel = points x2 !</li>
               <li>🛡️ Le bouclier bloque un coup</li>
             </ul>
-            <p className="text-xs text-muted-foreground">Utilise les flèches ← → ou bouge avec ton doigt</p>
             <Button
               size="lg"
               onClick={startGame}
@@ -395,6 +394,8 @@ export function SpaceGame() {
             >
               ▶ Commencer
             </Button>
+            <Leaderboard scores={scores} />
+            <p className="text-xs text-muted-foreground">Flèches ← → ou doigt sur l'écran</p>
           </div>
         )}
 
