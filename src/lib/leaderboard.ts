@@ -1,46 +1,72 @@
-const KEY = "space-adventure-leaderboard-v1";
-const MAX = 5;
+import { supabase } from "@/integrations/supabase/client";
+
+const MAX = 10;
 
 export interface ScoreEntry {
+  id?: string;
   name: string;
   score: number;
   date: number;
 }
 
-export function loadScores(): ScoreEntry[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as ScoreEntry[];
-    return Array.isArray(parsed) ? parsed.slice(0, MAX) : [];
-  } catch {
-    return [];
-  }
+export const TOP_MAX = MAX;
+
+interface LeaderboardRow {
+  id: string;
+  player_name: string;
+  score: number;
+  created_at: string;
+}
+
+function rowToEntry(row: LeaderboardRow): ScoreEntry {
+  return {
+    id: row.id,
+    name: row.player_name,
+    score: row.score,
+    date: new Date(row.created_at).getTime(),
+  };
+}
+
+export async function loadScores(): Promise<ScoreEntry[]> {
+  const { data, error } = await supabase
+    .from("leaderboard")
+    .select("id, player_name, score, created_at")
+    .order("score", { ascending: false })
+    .order("created_at", { ascending: true })
+    .limit(MAX);
+  if (error || !data) return [];
+  return data.map(rowToEntry);
 }
 
 export function qualifiesForTop(score: number, scores: ScoreEntry[]): boolean {
-  if (score <= 0) return false;
+  if (!Number.isFinite(score) || score <= 0) return false;
   if (scores.length < MAX) return true;
   return score > scores[scores.length - 1].score;
 }
 
-export function saveScore(name: string, score: number): ScoreEntry[] {
-  const current = loadScores();
-  const entry: ScoreEntry = {
-    name: name.trim().slice(0, 12) || "Anonyme",
-    score,
-    date: Date.now(),
-  };
-  const next = [...current, entry]
-    .sort((a, b) => b.score - a.score)
-    .slice(0, MAX);
-  try {
-    localStorage.setItem(KEY, JSON.stringify(next));
-  } catch {
-    // ignore
+export async function saveScore(name: string, score: number): Promise<ScoreEntry[]> {
+  const cleanName = name.trim().slice(0, 20) || "Anonyme";
+  const cleanScore = Math.max(0, Math.floor(Number(score) || 0));
+  if (!cleanName || !Number.isFinite(cleanScore)) {
+    return loadScores();
   }
-  return next;
+  await supabase.from("leaderboard").insert({
+    player_name: cleanName,
+    score: cleanScore,
+  });
+  return loadScores();
 }
 
-export const TOP_MAX = MAX;
+export function subscribeToLeaderboard(onChange: () => void) {
+  const channel = supabase
+    .channel("leaderboard-changes")
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "leaderboard" },
+      () => onChange(),
+    )
+    .subscribe();
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}
