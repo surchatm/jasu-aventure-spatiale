@@ -401,21 +401,53 @@ export function SpaceGame() {
 
         {/* Game over overlay */}
         {phase === "over" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-background/80 p-6 text-center backdrop-blur-sm animate-pop">
-            <div className="text-6xl">{won ? "🏆" : "💫"}</div>
-            <h2 className="text-3xl font-extrabold text-foreground">
+          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/85 p-6 text-center backdrop-blur-sm animate-pop">
+            <div className="text-5xl">{won ? "🏆" : "💫"}</div>
+            <h2 className="text-2xl font-extrabold text-foreground">
               {won ? "Tu as gagné !" : "Réessaie !"}
             </h2>
             <p className="text-lg font-bold text-foreground">Score : {score}</p>
-            {bestScore > 0 && <p className="text-xs text-muted-foreground">Meilleur : {bestScore}</p>}
-            <Button
-              size="lg"
-              onClick={startGame}
-              className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
-              style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
-            >
-              🔄 Rejouer
-            </Button>
+
+            {needsName ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submitName();
+                }}
+                className="flex w-full max-w-xs flex-col items-center gap-2"
+              >
+                <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                  🎉 Tu entres dans le Top 5 !
+                </p>
+                <Input
+                  autoFocus
+                  maxLength={12}
+                  value={pendingName}
+                  onChange={(e) => setPendingName(e.target.value)}
+                  placeholder="Ton prénom"
+                  className="h-11 rounded-full text-center text-base font-bold"
+                />
+                <Button
+                  type="submit"
+                  className="h-11 w-full rounded-full text-base font-bold"
+                  style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)" }}
+                >
+                  💾 Enregistrer
+                </Button>
+              </form>
+            ) : (
+              <>
+                <Leaderboard scores={scores} highlightIndex={savedIndex ?? undefined} />
+                <Button
+                  size="lg"
+                  onClick={startGame}
+                  className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
+                  style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+                >
+                  🔄 Rejouer
+                </Button>
+              </>
+            )}
           </div>
         )}
       </div>
