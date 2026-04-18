@@ -32,7 +32,7 @@ const STAGE_W = 100;
 const STAGE_H = 100;
 const PLAYER_W = 12; // percent
 const PLAYER_Y = 86; // percent from top
-const WIN_SCORE = 200;
+const WIN_SCORE = 100000;
 const TICK_MS = 30;
 
 const ITEM_VISUAL: Record<ItemKind, { emoji: string; size: number }> = {
