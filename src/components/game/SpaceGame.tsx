@@ -100,13 +100,15 @@ export function SpaceGame() {
   const startGame = useCallback(() => {
     reset();
     sfx.start();
+    music.play();
     setSavedIndex(null);
     setNeedsName(false);
     setPendingName("");
     setPhase("playing");
-  }, [reset]);
+  }, [reset, music]);
 
   const endGame = useCallback((finalScore: number) => {
+    music.stop();
     const current = loadScores();
     if (qualifiesForTop(finalScore, current)) {
       setNeedsName(true);
@@ -115,7 +117,7 @@ export function SpaceGame() {
       setScores(current);
     }
     setPhase("over");
-  }, []);
+  }, [music]);
 
   const submitName = useCallback(() => {
     const next = saveScore(pendingName, score);
@@ -190,10 +192,11 @@ export function SpaceGame() {
       if (Math.random() < spawnChance) {
         const r = Math.random();
         let kind: ItemKind;
-        if (r < 0.55) kind = "star";
-        else if (r < 0.85) kind = "asteroid";
-        else if (r < 0.95) kind = "rainbow";
-        else kind = "shield";
+        if (r < 0.5) kind = "star";
+        else if (r < 0.8) kind = "asteroid";
+        else if (r < 0.9) kind = "rainbow";
+        else if (r < 0.98) kind = "shield";
+        else kind = "pokeball"; // very rare ~2%
         idRef.current += 1;
         newItem = {
           id: idRef.current,
@@ -204,6 +207,36 @@ export function SpaceGame() {
           rot: Math.random() * 360,
         };
       }
+
+      // Spawn stationary planet (rare)
+      planetTimerRef.current += TICK_MS;
+      if (planetTimerRef.current > 8000 && Math.random() < 0.01) {
+        planetTimerRef.current = 0;
+        idRef.current += 1;
+        const newPlanet: Planet = {
+          id: idRef.current,
+          emoji: PLANET_EMOJIS[Math.floor(Math.random() * PLANET_EMOJIS.length)],
+          x: 15 + Math.random() * 70,
+          y: 20 + Math.random() * 45,
+          size: 44 + Math.random() * 24,
+        };
+        setPlanets((p) => [...p, newPlanet].slice(-3));
+      }
+
+      // Planet collision (stationary obstacle)
+      setPlanets((prev) => {
+        for (const pl of prev) {
+          const dx = pl.x - playerX;
+          const dy = pl.y - PLAYER_Y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const radius = pl.size / 12 + PLAYER_W / 2;
+          if (dist < radius) {
+            handleHit({ id: pl.id, kind: "asteroid", x: pl.x, y: pl.y, speed: 0, rot: 0 });
+            return prev.filter((x) => x.id !== pl.id);
+          }
+        }
+        return prev;
+      });
 
       // Update items + collisions
       setItems((prev) => {
