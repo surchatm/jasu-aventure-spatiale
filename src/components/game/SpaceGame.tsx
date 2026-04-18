@@ -379,15 +379,14 @@ export function SpaceGame() {
   const won = phase === "over" && score >= WIN_SCORE;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4" style={{ background: "var(--gradient-space)" }}>
-      <h1 className="text-center text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 sm:gap-4 sm:p-4" style={{ background: "var(--gradient-space)" }}>
+      <h1 className="text-center text-xl font-extrabold tracking-tight text-foreground sm:text-4xl">
         🚀 L'Aventure Spatiale
       </h1>
-      <p className="text-center text-sm text-muted-foreground"> </p>
 
       <div
         ref={stageRef}
-        className="relative aspect-[3/4] w-full max-w-md overflow-hidden rounded-3xl border-2 touch-none select-none"
+        className="relative aspect-[3/4] w-full max-w-md max-h-[78vh] sm:max-h-none overflow-hidden rounded-3xl border-2 touch-none select-none"
         style={{
           background: "var(--gradient-space)",
           borderColor: "var(--border)",
@@ -537,10 +536,10 @@ export function SpaceGame() {
 
         {/* Start overlay */}
         {phase === "start" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/70 p-6 text-center backdrop-blur-sm">
-            <div className="text-5xl animate-float-slow">🚀</div>
-            <h2 className="text-2xl font-extrabold text-foreground">Prêt, astronaute ?</h2>
-            <ul className="space-y-1 text-sm text-muted-foreground">
+          <div className="absolute inset-0 z-40 flex flex-col items-center justify-start gap-2 overflow-y-auto bg-background/70 p-4 text-center backdrop-blur-sm sm:justify-center sm:gap-3 sm:p-6">
+            <div className="text-4xl animate-float-slow sm:text-5xl">🚀</div>
+            <h2 className="text-xl font-extrabold text-foreground sm:text-2xl">Prêt, astronaute ?</h2>
+            <ul className="space-y-0.5 text-xs text-muted-foreground sm:space-y-1 sm:text-sm">
               <li>⭐ Attrape les étoiles pour marquer</li>
               <li>☄️ Évite les astéroïdes</li>
               <li>🌈 Arc-en-ciel = points x2 !</li>
@@ -553,13 +552,13 @@ export function SpaceGame() {
             <Button
               size="lg"
               onClick={startGame}
-              className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
+              className="h-12 rounded-full px-6 text-base font-bold shadow-lg transition-transform hover:scale-105 sm:h-14 sm:px-8 sm:text-lg"
               style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
             >
               ▶ Commencer
             </Button>
             <Leaderboard scores={scores} />
-            <p className="text-xs text-muted-foreground">Flèches ← → ou doigt sur l'écran</p>
+            <p className="text-[11px] text-muted-foreground sm:text-xs">Flèches ← → ou doigt sur l'écran</p>
           </div>
         )}
 
@@ -603,7 +602,7 @@ export function SpaceGame() {
                 className="flex w-full max-w-xs flex-col items-center gap-2"
               >
                 <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
-                  🎉 Tu entres dans le Top 10 mondial !
+                  🎉 Tu entres dans le Top 5 mondial !
                 </p>
                 <Input
                   autoFocus
