@@ -4,16 +4,16 @@ import { SpaceGame } from "@/components/game/SpaceGame";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Space Snack Adventure — Catch Stars, Dodge Asteroids!" },
+      { title: "L'Aventure Spatiale — Attrape les étoiles, évite les astéroïdes !" },
       {
         name: "description",
         content:
-          "A bright, fun mini arcade game for kids. Pilot a rocket, collect stars, and grab rainbow & shield power-ups while dodging asteroids.",
+          "Un mini-jeu d'arcade coloré et amusant pour les enfants. Pilote une fusée, collecte des étoiles et attrape les bonus arc-en-ciel et bouclier en évitant les astéroïdes.",
       },
-      { property: "og:title", content: "Space Snack Adventure" },
+      { property: "og:title", content: "L'Aventure Spatiale" },
       {
         property: "og:description",
-        content: "A colorful browser arcade game — catch stars, dodge asteroids, grab power-ups!",
+        content: "Un jeu d'arcade coloré dans le navigateur — attrape les étoiles, évite les astéroïdes, prends les bonus !",
       },
       { property: "og:type", content: "website" },
     ],

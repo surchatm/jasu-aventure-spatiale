@@ -207,16 +207,16 @@ export function SpaceGame() {
       sfx.power();
       setDoubled(true);
       setTimeout(() => setDoubled(false), 5000);
-      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "2x!", color: "var(--rainbow)" }]);
+      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "x2 !", color: "var(--rainbow)" }]);
     } else if (it.kind === "shield") {
       sfx.power();
       setShielded(true);
-      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Shield!", color: "var(--shield)" }]);
+      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
     } else if (it.kind === "asteroid") {
       if (shielded) {
         setShielded(false);
         sfx.power();
-        setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Blocked!", color: "var(--shield)" }]);
+        setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bloqué !", color: "var(--shield)" }]);
       } else {
         sfx.hit();
         setShake((s) => s + 1);
@@ -229,7 +229,7 @@ export function SpaceGame() {
           }
           return next;
         });
-        setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Ouch!", color: "var(--heart)" }]);
+        setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Aïe !", color: "var(--heart)" }]);
       }
     }
     setTimeout(() => setPopups((p) => p.filter((x) => x.id !== popupId)), 900);
@@ -240,10 +240,10 @@ export function SpaceGame() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4" style={{ background: "var(--gradient-space)" }}>
       <h1 className="text-center text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
-        🚀 Space Snack Adventure
+        🚀 L'Aventure Spatiale
       </h1>
       <p className="text-center text-sm text-muted-foreground">
-        Catch ⭐ stars, dodge ☄️ asteroids, grab 🌈 and 🛡️ power-ups!
+        Attrape les ⭐ étoiles, évite les ☄️ astéroïdes, prends les bonus 🌈 et 🛡️ !
       </p>
 
       <div
@@ -262,7 +262,7 @@ export function SpaceGame() {
         {/* HUD */}
         <div className="absolute inset-x-0 top-0 z-20 flex items-center justify-between p-3">
           <div className="rounded-full bg-card/80 px-3 py-1.5 text-sm font-bold text-card-foreground backdrop-blur">
-            Score: {score}
+            Score : {score}
           </div>
           <div className="flex gap-1">
             {Array.from({ length: 3 }).map((_, i) => (
@@ -277,12 +277,12 @@ export function SpaceGame() {
         <div className="absolute left-3 top-14 z-20 flex flex-col gap-1">
           {doubled && (
             <div className="rounded-full px-2 py-0.5 text-xs font-bold animate-pop" style={{ background: "var(--gradient-rainbow)", color: "var(--primary-foreground)" }}>
-              2x Score
+              Score x2
             </div>
           )}
           {shielded && (
             <div className="rounded-full px-2 py-0.5 text-xs font-bold animate-pop" style={{ backgroundColor: "var(--shield)", color: "var(--primary-foreground)" }}>
-              🛡️ Shield
+              🛡️ Bouclier
             </div>
           )}
         </div>
@@ -349,21 +349,21 @@ export function SpaceGame() {
         {phase === "start" && (
           <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-background/70 p-6 text-center backdrop-blur-sm">
             <div className="text-6xl animate-float-slow">🚀</div>
-            <h2 className="text-2xl font-extrabold text-foreground">Ready, Astronaut?</h2>
+            <h2 className="text-2xl font-extrabold text-foreground">Prêt, astronaute ?</h2>
             <ul className="space-y-1 text-sm text-muted-foreground">
-              <li>⭐ Catch stars to score</li>
-              <li>☄️ Dodge asteroids</li>
-              <li>🌈 Rainbow = 2x points!</li>
-              <li>🛡️ Shield blocks one hit</li>
+              <li>⭐ Attrape les étoiles pour marquer</li>
+              <li>☄️ Évite les astéroïdes</li>
+              <li>🌈 Arc-en-ciel = points x2 !</li>
+              <li>🛡️ Le bouclier bloque un coup</li>
             </ul>
-            <p className="text-xs text-muted-foreground">Use ← → arrows or move with your finger</p>
+            <p className="text-xs text-muted-foreground">Utilise les flèches ← → ou bouge avec ton doigt</p>
             <Button
               size="lg"
               onClick={startGame}
               className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
               style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
             >
-              ▶ Start Game
+              ▶ Commencer
             </Button>
           </div>
         )}
@@ -373,17 +373,17 @@ export function SpaceGame() {
           <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-background/80 p-6 text-center backdrop-blur-sm animate-pop">
             <div className="text-6xl">{won ? "🏆" : "💫"}</div>
             <h2 className="text-3xl font-extrabold text-foreground">
-              {won ? "You Win!" : "Try Again!"}
+              {won ? "Tu as gagné !" : "Réessaie !"}
             </h2>
-            <p className="text-lg font-bold text-foreground">Score: {score}</p>
-            {bestScore > 0 && <p className="text-xs text-muted-foreground">Best: {bestScore}</p>}
+            <p className="text-lg font-bold text-foreground">Score : {score}</p>
+            {bestScore > 0 && <p className="text-xs text-muted-foreground">Meilleur : {bestScore}</p>}
             <Button
               size="lg"
               onClick={startGame}
               className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
               style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
             >
-              🔄 Play Again
+              🔄 Rejouer
             </Button>
           </div>
         )}
