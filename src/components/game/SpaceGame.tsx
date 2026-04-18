@@ -72,6 +72,8 @@ export function SpaceGame() {
   const [savedIndex, setSavedIndex] = useState<number | null>(null);
   const [needsName, setNeedsName] = useState(false);
   const [planets, setPlanets] = useState<Planet[]>([]);
+  const [caught, setCaught] = useState<CaughtEntry[]>([]);
+  const caughtCountRef = useRef(0);
   const music = useMusic();
 
   useEffect(() => {
@@ -103,12 +105,14 @@ export function SpaceGame() {
     setItems([]);
     setPopups([]);
     setPlanets([]);
+    setCaught([]);
     setPlayerX(50);
     setShielded(false);
     setDoubled(false);
     elapsedRef.current = 0;
     milestoneRef.current = 0;
     planetTimerRef.current = 0;
+    caughtCountRef.current = 0;
   }, []);
 
   const startGame = useCallback(() => {
@@ -139,7 +143,7 @@ export function SpaceGame() {
       setNeedsName(false);
       return;
     }
-    const next = await saveScore(cleanName, score);
+    const next = await saveScore(cleanName, score, caughtCountRef.current);
     setScores(next);
     const idx = next.findIndex((e) => e.score === score && e.name === cleanName);
     setSavedIndex(idx >= 0 ? idx : null);
