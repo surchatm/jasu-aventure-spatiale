@@ -5,7 +5,7 @@ import { StarField } from "./StarField";
 import { Confetti } from "./Confetti";
 import { Leaderboard } from "./Leaderboard";
 import { sfx } from "@/lib/sound";
-import { loadScores, qualifiesForTop, saveScore, type ScoreEntry } from "@/lib/leaderboard";
+import { loadScores, qualifiesForTop, saveScore, subscribeToLeaderboard, type ScoreEntry } from "@/lib/leaderboard";
 import { useMusic } from "@/hooks/use-music";
 
 type Phase = "start" | "playing" | "over";
@@ -73,7 +73,19 @@ export function SpaceGame() {
   const music = useMusic();
 
   useEffect(() => {
-    setScores(loadScores());
+    let active = true;
+    loadScores().then((s) => {
+      if (active) setScores(s);
+    });
+    const unsub = subscribeToLeaderboard(() => {
+      loadScores().then((s) => {
+        if (active) setScores(s);
+      });
+    });
+    return () => {
+      active = false;
+      unsub();
+    };
   }, []);
 
   const idRef = useRef(0);
@@ -107,22 +119,27 @@ export function SpaceGame() {
     setPhase("playing");
   }, [reset, music]);
 
-  const endGame = useCallback((finalScore: number) => {
+  const endGame = useCallback(async (finalScore: number) => {
     music.stop();
-    const current = loadScores();
+    setPhase("over");
+    const current = await loadScores();
+    setScores(current);
     if (qualifiesForTop(finalScore, current)) {
       setNeedsName(true);
     } else {
       setNeedsName(false);
-      setScores(current);
     }
-    setPhase("over");
   }, [music]);
 
-  const submitName = useCallback(() => {
-    const next = saveScore(pendingName, score);
+  const submitName = useCallback(async () => {
+    const cleanName = pendingName.trim().slice(0, 20) || "Anonyme";
+    if (!Number.isFinite(score) || score <= 0) {
+      setNeedsName(false);
+      return;
+    }
+    const next = await saveScore(cleanName, score);
     setScores(next);
-    const idx = next.findIndex((e) => e.score === score && e.name === (pendingName.trim().slice(0, 12) || "Anonyme"));
+    const idx = next.findIndex((e) => e.score === score && e.name === cleanName);
     setSavedIndex(idx >= 0 ? idx : null);
     setNeedsName(false);
   }, [pendingName, score]);
