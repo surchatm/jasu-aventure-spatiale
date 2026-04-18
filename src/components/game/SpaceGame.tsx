@@ -4,9 +4,12 @@ import { Input } from "@/components/ui/input";
 import { StarField } from "./StarField";
 import { Confetti } from "./Confetti";
 import { Leaderboard } from "./Leaderboard";
+import { PokemonHUD, type CaughtEntry } from "./PokemonHUD";
 import { sfx } from "@/lib/sound";
 import { loadScores, qualifiesForTop, saveScore, subscribeToLeaderboard, type ScoreEntry } from "@/lib/leaderboard";
+import { rollPokemon, type PokemonDef } from "@/lib/pokemon";
 import { useMusic } from "@/hooks/use-music";
+import pokeballImg from "@/assets/pokeball.png";
 
 type Phase = "start" | "playing" | "over";
 type ItemKind = "star" | "asteroid" | "rainbow" | "shield" | "pokeball";
@@ -35,15 +38,14 @@ const PLAYER_Y = 86; // percent from top
 const WIN_SCORE = 100000;
 const TICK_MS = 30;
 
-const ITEM_VISUAL: Record<ItemKind, { emoji: string; size: number }> = {
+const ITEM_VISUAL: Record<Exclude<ItemKind, "pokeball">, { emoji: string; size: number }> = {
   star: { emoji: "⭐", size: 36 },
   asteroid: { emoji: "☄️", size: 38 },
   rainbow: { emoji: "🌈", size: 38 },
   shield: { emoji: "🛡️", size: 36 },
-  pokeball: { emoji: "🔴", size: 38 },
 };
+const POKEBALL_SIZE = 42;
 
-const POKEMONS = ["🐹", "🦊", "🐉", "🦄", "🐲", "🦎", "🐢", "🦋"];
 const PLANET_EMOJIS = ["🪐", "🌍", "🌕", "🔵"];
 
 interface Planet {
