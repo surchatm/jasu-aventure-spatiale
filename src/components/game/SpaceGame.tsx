@@ -216,10 +216,10 @@ export function SpaceGame() {
         const r = Math.random();
         let kind: ItemKind;
         if (r < 0.5) kind = "star";
-        else if (r < 0.8) kind = "asteroid";
-        else if (r < 0.9) kind = "rainbow";
-        else if (r < 0.98) kind = "shield";
-        else kind = "pokeball"; // very rare ~2%
+        else if (r < 0.82) kind = "asteroid";
+        else if (r < 0.92) kind = "rainbow";
+        else if (r < 0.997) kind = "shield";
+        else kind = "pokeball"; // ~0.3% of spawns → ~1 per 45-60s
         idRef.current += 1;
         newItem = {
           id: idRef.current,
