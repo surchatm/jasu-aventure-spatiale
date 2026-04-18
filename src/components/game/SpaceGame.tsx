@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { StarField } from "./StarField";
 import { Confetti } from "./Confetti";
+import { Leaderboard } from "./Leaderboard";
 import { sfx } from "@/lib/sound";
+import { loadScores, qualifiesForTop, saveScore, type ScoreEntry } from "@/lib/leaderboard";
 
 type Phase = "start" | "playing" | "over";
 type ItemKind = "star" | "asteroid" | "rainbow" | "shield";
@@ -49,7 +52,14 @@ export function SpaceGame() {
   const [doubled, setDoubled] = useState(false);
   const [shake, setShake] = useState(0);
   const [confetti, setConfetti] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
+  const [scores, setScores] = useState<ScoreEntry[]>([]);
+  const [pendingName, setPendingName] = useState("");
+  const [savedIndex, setSavedIndex] = useState<number | null>(null);
+  const [needsName, setNeedsName] = useState(false);
+
+  useEffect(() => {
+    setScores(loadScores());
+  }, []);
 
   const idRef = useRef(0);
   const elapsedRef = useRef(0);
@@ -72,8 +82,30 @@ export function SpaceGame() {
   const startGame = useCallback(() => {
     reset();
     sfx.start();
+    setSavedIndex(null);
+    setNeedsName(false);
+    setPendingName("");
     setPhase("playing");
   }, [reset]);
+
+  const endGame = useCallback((finalScore: number) => {
+    const current = loadScores();
+    if (qualifiesForTop(finalScore, current)) {
+      setNeedsName(true);
+    } else {
+      setNeedsName(false);
+      setScores(current);
+    }
+    setPhase("over");
+  }, []);
+
+  const submitName = useCallback(() => {
+    const next = saveScore(pendingName, score);
+    setScores(next);
+    const idx = next.findIndex((e) => e.score === score && e.name === (pendingName.trim().slice(0, 12) || "Anonyme"));
+    setSavedIndex(idx >= 0 ? idx : null);
+    setNeedsName(false);
+  }, [pendingName, score]);
 
   // Keyboard
   useEffect(() => {
@@ -197,8 +229,7 @@ export function SpaceGame() {
         if (next >= WIN_SCORE) {
           sfx.win();
           setConfetti((c) => c + 1);
-          setBestScore((b) => Math.max(b, next));
-          setPhase("over");
+          endGame(next);
         }
         return next;
       });
@@ -224,8 +255,7 @@ export function SpaceGame() {
           const next = h - 1;
           if (next <= 0) {
             sfx.gameover();
-            setBestScore((b) => Math.max(b, score));
-            setPhase("over");
+            endGame(score);
           }
           return next;
         });
@@ -347,8 +377,8 @@ export function SpaceGame() {
 
         {/* Start overlay */}
         {phase === "start" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-background/70 p-6 text-center backdrop-blur-sm">
-            <div className="text-6xl animate-float-slow">🚀</div>
+          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/70 p-6 text-center backdrop-blur-sm">
+            <div className="text-5xl animate-float-slow">🚀</div>
             <h2 className="text-2xl font-extrabold text-foreground">Prêt, astronaute ?</h2>
             <ul className="space-y-1 text-sm text-muted-foreground">
               <li>⭐ Attrape les étoiles pour marquer</li>
@@ -356,7 +386,6 @@ export function SpaceGame() {
               <li>🌈 Arc-en-ciel = points x2 !</li>
               <li>🛡️ Le bouclier bloque un coup</li>
             </ul>
-            <p className="text-xs text-muted-foreground">Utilise les flèches ← → ou bouge avec ton doigt</p>
             <Button
               size="lg"
               onClick={startGame}
@@ -365,26 +394,60 @@ export function SpaceGame() {
             >
               ▶ Commencer
             </Button>
+            <Leaderboard scores={scores} />
+            <p className="text-xs text-muted-foreground">Flèches ← → ou doigt sur l'écran</p>
           </div>
         )}
 
         {/* Game over overlay */}
         {phase === "over" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4 bg-background/80 p-6 text-center backdrop-blur-sm animate-pop">
-            <div className="text-6xl">{won ? "🏆" : "💫"}</div>
-            <h2 className="text-3xl font-extrabold text-foreground">
+          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/85 p-6 text-center backdrop-blur-sm animate-pop">
+            <div className="text-5xl">{won ? "🏆" : "💫"}</div>
+            <h2 className="text-2xl font-extrabold text-foreground">
               {won ? "Tu as gagné !" : "Réessaie !"}
             </h2>
             <p className="text-lg font-bold text-foreground">Score : {score}</p>
-            {bestScore > 0 && <p className="text-xs text-muted-foreground">Meilleur : {bestScore}</p>}
-            <Button
-              size="lg"
-              onClick={startGame}
-              className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
-              style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
-            >
-              🔄 Rejouer
-            </Button>
+
+            {needsName ? (
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  submitName();
+                }}
+                className="flex w-full max-w-xs flex-col items-center gap-2"
+              >
+                <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                  🎉 Tu entres dans le Top 5 !
+                </p>
+                <Input
+                  autoFocus
+                  maxLength={12}
+                  value={pendingName}
+                  onChange={(e) => setPendingName(e.target.value)}
+                  placeholder="Ton prénom"
+                  className="h-11 rounded-full text-center text-base font-bold"
+                />
+                <Button
+                  type="submit"
+                  className="h-11 w-full rounded-full text-base font-bold"
+                  style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)" }}
+                >
+                  💾 Enregistrer
+                </Button>
+              </form>
+            ) : (
+              <>
+                <Leaderboard scores={scores} highlightIndex={savedIndex ?? undefined} />
+                <Button
+                  size="lg"
+                  onClick={startGame}
+                  className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
+                  style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+                >
+                  🔄 Rejouer
+                </Button>
+              </>
+            )}
           </div>
         )}
       </div>
