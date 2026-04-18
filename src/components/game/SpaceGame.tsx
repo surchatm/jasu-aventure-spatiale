@@ -626,14 +626,30 @@ export function SpaceGame() {
             ) : (
               <>
                 <Leaderboard scores={scores} highlightIndex={savedIndex ?? undefined} />
-                <Button
-                  size="lg"
-                  onClick={startGame}
-                  className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
-                  style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
-                >
-                  🔄 Rejouer
-                </Button>
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  <Button
+                    size="lg"
+                    onClick={startGame}
+                    className="h-14 rounded-full px-8 text-lg font-bold shadow-lg transition-transform hover:scale-105"
+                    style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+                  >
+                    🔄 Rejouer
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    onClick={() => {
+                      reset();
+                      setSavedIndex(null);
+                      setNeedsName(false);
+                      setPendingName("");
+                      setPhase("start");
+                    }}
+                    className="h-14 rounded-full px-6 text-base font-bold"
+                  >
+                    🏠 Accueil
+                  </Button>
+                </div>
               </>
             )}
           </div>
