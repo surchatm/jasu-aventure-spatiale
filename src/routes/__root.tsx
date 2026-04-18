@@ -29,14 +29,18 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Jasu Aventure Spatiale" },
+      { name: "description", content: "A fun, browser-based arcade game for kids where players collect items and avoid obstacles." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Jasu Aventure Spatiale" },
+      { property: "og:description", content: "A fun, browser-based arcade game for kids where players collect items and avoid obstacles." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Jasu Aventure Spatiale" },
+      { name: "twitter:description", content: "A fun, browser-based arcade game for kids where players collect items and avoid obstacles." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4d63f59d-278f-4daa-a0f3-803212d89f40/id-preview-df860575--d936caea-2ab6-4fd2-b248-2bb0c18dd267.lovable.app-1776497299122.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4d63f59d-278f-4daa-a0f3-803212d89f40/id-preview-df860575--d936caea-2ab6-4fd2-b248-2bb0c18dd267.lovable.app-1776497299122.png" },
     ],
     links: [
       {
