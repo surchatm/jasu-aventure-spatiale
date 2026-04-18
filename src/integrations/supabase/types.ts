@@ -19,18 +19,21 @@ export type Database = {
           created_at: string
           id: string
           player_name: string
+          pokemon_caught: number
           score: number
         }
         Insert: {
           created_at?: string
           id?: string
           player_name: string
+          pokemon_caught?: number
           score: number
         }
         Update: {
           created_at?: string
           id?: string
           player_name?: string
+          pokemon_caught?: number
           score?: number
         }
         Relationships: []

@@ -4,9 +4,12 @@ import { Input } from "@/components/ui/input";
 import { StarField } from "./StarField";
 import { Confetti } from "./Confetti";
 import { Leaderboard } from "./Leaderboard";
+import { PokemonHUD, type CaughtEntry } from "./PokemonHUD";
 import { sfx } from "@/lib/sound";
 import { loadScores, qualifiesForTop, saveScore, subscribeToLeaderboard, type ScoreEntry } from "@/lib/leaderboard";
+import { rollPokemon, type PokemonDef } from "@/lib/pokemon";
 import { useMusic } from "@/hooks/use-music";
+import pokeballImg from "@/assets/pokeball.png";
 
 type Phase = "start" | "playing" | "over";
 type ItemKind = "star" | "asteroid" | "rainbow" | "shield" | "pokeball";
@@ -35,15 +38,14 @@ const PLAYER_Y = 86; // percent from top
 const WIN_SCORE = 100000;
 const TICK_MS = 30;
 
-const ITEM_VISUAL: Record<ItemKind, { emoji: string; size: number }> = {
+const ITEM_VISUAL: Record<Exclude<ItemKind, "pokeball">, { emoji: string; size: number }> = {
   star: { emoji: "⭐", size: 36 },
   asteroid: { emoji: "☄️", size: 38 },
   rainbow: { emoji: "🌈", size: 38 },
   shield: { emoji: "🛡️", size: 36 },
-  pokeball: { emoji: "🔴", size: 38 },
 };
+const POKEBALL_SIZE = 42;
 
-const POKEMONS = ["🐹", "🦊", "🐉", "🦄", "🐲", "🦎", "🐢", "🦋"];
 const PLANET_EMOJIS = ["🪐", "🌍", "🌕", "🔵"];
 
 interface Planet {
@@ -70,6 +72,8 @@ export function SpaceGame() {
   const [savedIndex, setSavedIndex] = useState<number | null>(null);
   const [needsName, setNeedsName] = useState(false);
   const [planets, setPlanets] = useState<Planet[]>([]);
+  const [caught, setCaught] = useState<CaughtEntry[]>([]);
+  const caughtCountRef = useRef(0);
   const music = useMusic();
 
   useEffect(() => {
@@ -101,12 +105,14 @@ export function SpaceGame() {
     setItems([]);
     setPopups([]);
     setPlanets([]);
+    setCaught([]);
     setPlayerX(50);
     setShielded(false);
     setDoubled(false);
     elapsedRef.current = 0;
     milestoneRef.current = 0;
     planetTimerRef.current = 0;
+    caughtCountRef.current = 0;
   }, []);
 
   const startGame = useCallback(() => {
@@ -137,7 +143,7 @@ export function SpaceGame() {
       setNeedsName(false);
       return;
     }
-    const next = await saveScore(cleanName, score);
+    const next = await saveScore(cleanName, score, caughtCountRef.current);
     setScores(next);
     const idx = next.findIndex((e) => e.score === score && e.name === cleanName);
     setSavedIndex(idx >= 0 ? idx : null);
@@ -312,10 +318,22 @@ export function SpaceGame() {
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
     } else if (it.kind === "pokeball") {
-      const points = doubled ? 100 : 50;
+      const poke: PokemonDef = rollPokemon();
+      const basePoints = poke.points;
+      const points = doubled ? basePoints * 2 : basePoints;
       sfx.pokemon();
       setConfetti((c) => c + 1);
-      const poke = POKEMONS[Math.floor(Math.random() * POKEMONS.length)];
+      caughtCountRef.current += 1;
+      setCaught((prev) => {
+        const idx = prev.findIndex((c) => c.pokemon.id === poke.id);
+        const now = Date.now();
+        if (idx >= 0) {
+          const copy = prev.slice();
+          copy[idx] = { ...copy[idx], count: copy[idx].count + 1, lastAt: now };
+          return copy;
+        }
+        return [...prev, { pokemon: poke, count: 1, lastAt: now }];
+      });
       setScore((s) => {
         const next = s + points;
         if (next >= WIN_SCORE) {
@@ -324,7 +342,7 @@ export function SpaceGame() {
         }
         return next;
       });
-      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke} +${points} !`, color: "var(--rainbow)" }]);
+      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
     } else if (it.kind === "asteroid") {
       if (shielded) {
         setShielded(false);
@@ -395,6 +413,8 @@ export function SpaceGame() {
           </div>
         </div>
 
+        <PokemonHUD caught={caught} />
+
         {/* Power-up indicators */}
         <div className="absolute left-3 top-14 z-20 flex flex-col gap-1">
           {doubled && (
@@ -431,6 +451,27 @@ export function SpaceGame() {
 
         {/* Falling items */}
         {items.map((it) => {
+          if (it.kind === "pokeball") {
+            return (
+              <img
+                key={it.id}
+                src={pokeballImg}
+                alt=""
+                aria-hidden="true"
+                draggable={false}
+                className="absolute z-10 select-none"
+                style={{
+                  left: `${it.x}%`,
+                  top: `${it.y}%`,
+                  width: `${POKEBALL_SIZE}px`,
+                  height: `${POKEBALL_SIZE}px`,
+                  transform: `translate(-50%, -50%) rotate(${it.rot}deg)`,
+                  filter: "drop-shadow(0 0 8px var(--rainbow))",
+                  willChange: "transform",
+                }}
+              />
+            );
+          }
           const v = ITEM_VISUAL[it.kind];
           return (
             <div
@@ -495,6 +536,7 @@ export function SpaceGame() {
               <li>☄️ Évite les astéroïdes</li>
               <li>🌈 Arc-en-ciel = points x2 !</li>
               <li>🛡️ Le bouclier bloque un coup</li>
+              <li>🔴 Pokéball = attrape un Pokémon !</li>
             </ul>
             <Button
               size="lg"
@@ -517,6 +559,28 @@ export function SpaceGame() {
               {won ? "Tu as gagné !" : "Réessaie !"}
             </h2>
             <p className="text-lg font-bold text-foreground">Score : {score}</p>
+            {caught.length > 0 && (
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                  🔴 {caughtCountRef.current} Pokémon attrapé{caughtCountRef.current > 1 ? "s" : ""}
+                </p>
+                <div className="flex flex-wrap justify-center gap-1">
+                  {caught.map((c) => (
+                    <div key={c.pokemon.id} className="relative h-10 w-10">
+                      <img src={c.pokemon.image} alt={c.pokemon.name} className="h-full w-full object-contain" draggable={false} />
+                      {c.count > 1 && (
+                        <span
+                          className="absolute -bottom-1 -right-1 rounded-full px-1 text-[10px] font-bold"
+                          style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+                        >
+                          ×{c.count}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {needsName ? (
               <form

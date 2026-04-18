@@ -24,7 +24,7 @@ export function Leaderboard({
           const highlighted = i === highlightIndex;
           return (
             <li
-              key={`${s.date}-${i}`}
+              key={s.id ?? `${s.date}-${i}`}
               className={`flex items-center justify-between rounded-lg px-3 py-1.5 text-sm font-semibold transition ${
                 highlighted ? "animate-pop" : ""
               }`}
@@ -33,11 +33,22 @@ export function Leaderboard({
                 color: highlighted ? "var(--primary-foreground)" : "var(--foreground)",
               }}
             >
-              <span className="flex items-center gap-2">
+              <span className="flex min-w-0 items-center gap-2">
                 <span className="w-5 text-center">{MEDALS[i] ?? `${i + 1}.`}</span>
                 <span className="truncate">{s.name}</span>
               </span>
-              <span className="tabular-nums">{s.score}</span>
+              <span className="flex items-center gap-2 tabular-nums">
+                {s.pokemonCaught > 0 && (
+                  <span
+                    className="rounded-full px-1.5 py-0.5 text-[10px] font-bold"
+                    style={{ background: "var(--accent)", color: "var(--accent-foreground)" }}
+                    title="Pokémon attrapés"
+                  >
+                    🔴 {s.pokemonCaught}
+                  </span>
+                )}
+                <span>{s.score}</span>
+              </span>
             </li>
           );
         })}
