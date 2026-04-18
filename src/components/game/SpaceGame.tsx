@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { StarField } from "./StarField";
 import { Confetti } from "./Confetti";
+import { Leaderboard } from "./Leaderboard";
 import { sfx } from "@/lib/sound";
+import { loadScores, qualifiesForTop, saveScore, type ScoreEntry } from "@/lib/leaderboard";
 
 type Phase = "start" | "playing" | "over";
 type ItemKind = "star" | "asteroid" | "rainbow" | "shield";
