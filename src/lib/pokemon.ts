@@ -27,15 +27,16 @@ export const POKEMONS: PokemonDef[] = [
   { id: "dracaufeu", name: "Dracaufeu", image: dracaufeu, points: 500, rarity: "legendary", weight: 3 },
 ];
 
-const TOTAL_WEIGHT = POKEMONS.reduce((s, p) => s + p.weight, 0);
-
-export function rollPokemon(): PokemonDef {
-  let r = Math.random() * TOTAL_WEIGHT;
-  for (const p of POKEMONS) {
+export function rollPokemon(excludeIds: string[] = []): PokemonDef | null {
+  const pool = POKEMONS.filter((p) => !excludeIds.includes(p.id));
+  if (pool.length === 0) return null;
+  const total = pool.reduce((s, p) => s + p.weight, 0);
+  let r = Math.random() * total;
+  for (const p of pool) {
     r -= p.weight;
     if (r <= 0) return p;
   }
-  return POKEMONS[0];
+  return pool[0];
 }
 
 export const RARITY_COLOR: Record<Rarity, string> = {
