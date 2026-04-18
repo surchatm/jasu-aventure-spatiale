@@ -5,6 +5,7 @@ import papilusion from "@/assets/pokemon/papilusion.png";
 import pikachu from "@/assets/pokemon/pikachu.png";
 import rondoudou from "@/assets/pokemon/rondoudou.png";
 import ferosinge from "@/assets/pokemon/ferosinge.png";
+import mewto from "@/assets/pokemon/mewto.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
@@ -24,7 +25,8 @@ export const POKEMONS: PokemonDef[] = [
   { id: "carabaffe", name: "Carabaffe", image: carabaffe, points: 100, rarity: "rare", weight: 12 },
   { id: "ferosinge", name: "Férosinge", image: ferosinge, points: 120, rarity: "rare", weight: 10 },
   { id: "pikachu", name: "Pikachu", image: pikachu, points: 200, rarity: "rare", weight: 8 },
-  { id: "dracaufeu", name: "Dracaufeu", image: dracaufeu, points: 500, rarity: "legendary", weight: 3 },
+  { id: "dracaufeu", name: "Dracaufeu", image: dracaufeu, points: 300, rarity: "rare", weight: 5 },
+  { id: "mewto", name: "Mewto", image: mewto, points: 500, rarity: "legendary", weight: 3 },
 ];
 
 export function rollPokemon(excludeIds: string[] = []): PokemonDef | null {
