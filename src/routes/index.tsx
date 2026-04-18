@@ -1,26 +1,26 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { SpaceGame } from "@/components/game/SpaceGame";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Space Snack Adventure — Catch Stars, Dodge Asteroids!" },
+      {
+        name: "description",
+        content:
+          "A bright, fun mini arcade game for kids. Pilot a rocket, collect stars, and grab rainbow & shield power-ups while dodging asteroids.",
+      },
+      { property: "og:title", content: "Space Snack Adventure" },
+      {
+        property: "og:description",
+        content: "A colorful browser arcade game — catch stars, dodge asteroids, grab power-ups!",
+      },
+      { property: "og:type", content: "website" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. For sites with multiple pages (About, Services, Contact, etc.),
-// create separate route files (about.tsx, services.tsx, contact.tsx) — don't put all pages in this file.
-function PlaceholderIndex() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
-
 function Index() {
-  return <PlaceholderIndex />;
+  return <SpaceGame />;
 }
