@@ -69,6 +69,8 @@ export function SpaceGame() {
   const [pendingName, setPendingName] = useState("");
   const [savedIndex, setSavedIndex] = useState<number | null>(null);
   const [needsName, setNeedsName] = useState(false);
+  const [planets, setPlanets] = useState<Planet[]>([]);
+  const music = useMusic();
 
   useEffect(() => {
     setScores(loadScores());
@@ -79,17 +81,20 @@ export function SpaceGame() {
   const keysRef = useRef<{ left: boolean; right: boolean }>({ left: false, right: false });
   const stageRef = useRef<HTMLDivElement>(null);
   const milestoneRef = useRef(0);
+  const planetTimerRef = useRef(0);
 
   const reset = useCallback(() => {
     setScore(0);
     setHearts(3);
     setItems([]);
     setPopups([]);
+    setPlanets([]);
     setPlayerX(50);
     setShielded(false);
     setDoubled(false);
     elapsedRef.current = 0;
     milestoneRef.current = 0;
+    planetTimerRef.current = 0;
   }, []);
 
   const startGame = useCallback(() => {
