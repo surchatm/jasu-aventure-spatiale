@@ -294,6 +294,20 @@ export function SpaceGame() {
       sfx.power();
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
+    } else if (it.kind === "pokeball") {
+      const points = doubled ? 100 : 50;
+      sfx.pokemon();
+      setConfetti((c) => c + 1);
+      const poke = POKEMONS[Math.floor(Math.random() * POKEMONS.length)];
+      setScore((s) => {
+        const next = s + points;
+        if (next >= WIN_SCORE) {
+          sfx.win();
+          endGame(next);
+        }
+        return next;
+      });
+      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke} +${points} !`, color: "var(--rainbow)" }]);
     } else if (it.kind === "asteroid") {
       if (shielded) {
         setShielded(false);
@@ -345,12 +359,22 @@ export function SpaceGame() {
           <div className="rounded-full bg-card/80 px-3 py-1.5 text-sm font-bold text-card-foreground backdrop-blur">
             Score : {score}
           </div>
-          <div className="flex gap-1">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <span key={i} className="text-xl" style={{ filter: i < hearts ? "none" : "grayscale(1) opacity(0.3)" }}>
-                ❤️
-              </span>
-            ))}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={music.toggleMute}
+              aria-label={music.muted ? "Activer la musique" : "Couper la musique"}
+              className="rounded-full bg-card/80 px-2 py-1 text-base backdrop-blur transition hover:scale-110"
+            >
+              {music.muted ? "🔇" : "🔊"}
+            </button>
+            <div className="flex gap-1">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <span key={i} className="text-xl" style={{ filter: i < hearts ? "none" : "grayscale(1) opacity(0.3)" }}>
+                  ❤️
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
