@@ -39,8 +39,8 @@ export const Route = createRootRoute({
       { name: "twitter:site", content: "@Lovable" },
       { name: "twitter:title", content: "Jasu Aventure Spatiale" },
       { name: "twitter:description", content: "A fun, browser-based arcade game for kids where players collect items and avoid obstacles." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4d63f59d-278f-4daa-a0f3-803212d89f40/id-preview-df860575--d936caea-2ab6-4fd2-b248-2bb0c18dd267.lovable.app-1776497299122.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/4d63f59d-278f-4daa-a0f3-803212d89f40/id-preview-df860575--d936caea-2ab6-4fd2-b248-2bb0c18dd267.lovable.app-1776497299122.png" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/d2f0c36c-d19f-4361-9148-ca50fe7c4c57" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/d2f0c36c-d19f-4361-9148-ca50fe7c4c57" },
     ],
     links: [
       {
