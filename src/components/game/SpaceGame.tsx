@@ -527,11 +527,11 @@ export function SpaceGame() {
                 className="flex w-full max-w-xs flex-col items-center gap-2"
               >
                 <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
-                  🎉 Tu entres dans le Top 5 !
+                  🎉 Tu entres dans le Top 10 mondial !
                 </p>
                 <Input
                   autoFocus
-                  maxLength={12}
+                  maxLength={20}
                   value={pendingName}
                   onChange={(e) => setPendingName(e.target.value)}
                   placeholder="Ton prénom"
