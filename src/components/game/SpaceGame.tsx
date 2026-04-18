@@ -98,6 +98,7 @@ export function SpaceGame() {
   const stageRef = useRef<HTMLDivElement>(null);
   const milestoneRef = useRef(0);
   const planetTimerRef = useRef(0);
+  const caughtIdsRef = useRef<Set<string>>(new Set());
 
   const reset = useCallback(() => {
     setScore(0);
@@ -113,6 +114,7 @@ export function SpaceGame() {
     milestoneRef.current = 0;
     planetTimerRef.current = 0;
     caughtCountRef.current = 0;
+    caughtIdsRef.current = new Set();
   }, []);
 
   const startGame = useCallback(() => {
@@ -318,31 +320,28 @@ export function SpaceGame() {
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
     } else if (it.kind === "pokeball") {
-      const poke: PokemonDef = rollPokemon();
-      const basePoints = poke.points;
-      const points = doubled ? basePoints * 2 : basePoints;
-      sfx.pokemon();
-      setConfetti((c) => c + 1);
-      caughtCountRef.current += 1;
-      setCaught((prev) => {
-        const idx = prev.findIndex((c) => c.pokemon.id === poke.id);
-        const now = Date.now();
-        if (idx >= 0) {
-          const copy = prev.slice();
-          copy[idx] = { ...copy[idx], count: copy[idx].count + 1, lastAt: now };
-          return copy;
-        }
-        return [...prev, { pokemon: poke, count: 1, lastAt: now }];
-      });
-      setScore((s) => {
-        const next = s + points;
-        if (next >= WIN_SCORE) {
-          sfx.win();
-          endGame(next);
-        }
-        return next;
-      });
-      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
+      const poke = rollPokemon(Array.from(caughtIdsRef.current));
+      if (!poke) {
+        // Already caught them all — treat as a small bonus
+        sfx.power();
+        setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Pokédex complet !", color: "var(--rainbow)" }]);
+      } else {
+        const points = doubled ? poke.points * 2 : poke.points;
+        sfx.pokemon();
+        setConfetti((c) => c + 1);
+        caughtCountRef.current += 1;
+        caughtIdsRef.current.add(poke.id);
+        setCaught((prev) => [...prev, { pokemon: poke, count: 1, lastAt: Date.now() }]);
+        setScore((s) => {
+          const next = s + points;
+          if (next >= WIN_SCORE) {
+            sfx.win();
+            endGame(next);
+          }
+          return next;
+        });
+        setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
+      }
     } else if (it.kind === "asteroid") {
       if (shielded) {
         setShielded(false);
