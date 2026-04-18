@@ -6,6 +6,7 @@ export interface ScoreEntry {
   id?: string;
   name: string;
   score: number;
+  pokemonCaught: number;
   date: number;
 }
 
@@ -15,6 +16,7 @@ interface LeaderboardRow {
   id: string;
   player_name: string;
   score: number;
+  pokemon_caught: number | null;
   created_at: string;
 }
 
@@ -23,6 +25,7 @@ function rowToEntry(row: LeaderboardRow): ScoreEntry {
     id: row.id,
     name: row.player_name,
     score: row.score,
+    pokemonCaught: row.pokemon_caught ?? 0,
     date: new Date(row.created_at).getTime(),
   };
 }
@@ -30,7 +33,7 @@ function rowToEntry(row: LeaderboardRow): ScoreEntry {
 export async function loadScores(): Promise<ScoreEntry[]> {
   const { data, error } = await supabase
     .from("leaderboard")
-    .select("id, player_name, score, created_at")
+    .select("id, player_name, score, pokemon_caught, created_at")
     .order("score", { ascending: false })
     .order("created_at", { ascending: true })
     .limit(MAX);
@@ -44,15 +47,21 @@ export function qualifiesForTop(score: number, scores: ScoreEntry[]): boolean {
   return score > scores[scores.length - 1].score;
 }
 
-export async function saveScore(name: string, score: number): Promise<ScoreEntry[]> {
+export async function saveScore(
+  name: string,
+  score: number,
+  pokemonCaught: number,
+): Promise<ScoreEntry[]> {
   const cleanName = name.trim().slice(0, 20) || "Anonyme";
   const cleanScore = Math.max(0, Math.floor(Number(score) || 0));
+  const cleanCaught = Math.max(0, Math.floor(Number(pokemonCaught) || 0));
   if (!cleanName || !Number.isFinite(cleanScore)) {
     return loadScores();
   }
   await supabase.from("leaderboard").insert({
     player_name: cleanName,
     score: cleanScore,
+    pokemon_caught: cleanCaught,
   });
   return loadScores();
 }
