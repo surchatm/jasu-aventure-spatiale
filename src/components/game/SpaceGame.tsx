@@ -413,6 +413,8 @@ export function SpaceGame() {
           </div>
         </div>
 
+        <PokemonHUD caught={caught} />
+
         {/* Power-up indicators */}
         <div className="absolute left-3 top-14 z-20 flex flex-col gap-1">
           {doubled && (
