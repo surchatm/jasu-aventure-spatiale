@@ -6,9 +6,10 @@ import { Confetti } from "./Confetti";
 import { Leaderboard } from "./Leaderboard";
 import { sfx } from "@/lib/sound";
 import { loadScores, qualifiesForTop, saveScore, type ScoreEntry } from "@/lib/leaderboard";
+import { useMusic } from "@/hooks/use-music";
 
 type Phase = "start" | "playing" | "over";
-type ItemKind = "star" | "asteroid" | "rainbow" | "shield";
+type ItemKind = "star" | "asteroid" | "rainbow" | "shield" | "pokeball";
 
 interface FallingItem {
   id: number;
@@ -39,7 +40,19 @@ const ITEM_VISUAL: Record<ItemKind, { emoji: string; size: number }> = {
   asteroid: { emoji: "☄️", size: 38 },
   rainbow: { emoji: "🌈", size: 38 },
   shield: { emoji: "🛡️", size: 36 },
+  pokeball: { emoji: "🔴", size: 38 },
 };
+
+const POKEMONS = ["🐹", "🦊", "🐉", "🦄", "🐲", "🦎", "🐢", "🦋"];
+const PLANET_EMOJIS = ["🪐", "🌍", "🌕", "🔵"];
+
+interface Planet {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+}
 
 export function SpaceGame() {
   const [phase, setPhase] = useState<Phase>("start");
