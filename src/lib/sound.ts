@@ -50,4 +50,7 @@ export const sfx = {
     tone(523, 0.1, "triangle", 0.18);
     setTimeout(() => tone(784, 0.15, "triangle", 0.18), 100);
   },
+  pokemon: () => {
+    [659, 784, 988, 1318].forEach((f, i) => setTimeout(() => tone(f, 0.12, "square", 0.18), i * 80));
+  },
 };
