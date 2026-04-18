@@ -536,7 +536,10 @@ export function SpaceGame() {
               <li>☄️ Évite les astéroïdes</li>
               <li>🌈 Arc-en-ciel = points x2 !</li>
               <li>🛡️ Le bouclier bloque un coup</li>
-              <li>🔴 Pokéball = attrape un Pokémon !</li>
+              <li className="flex items-center justify-center gap-1.5">
+                <img src={pokeballImg} alt="" aria-hidden="true" className="h-4 w-4 inline-block" draggable={false} />
+                <span>Pokéball = attrape un Pokémon (rare !)</span>
+              </li>
             </ul>
             <Button
               size="lg"
