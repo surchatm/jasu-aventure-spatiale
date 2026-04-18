@@ -318,10 +318,22 @@ export function SpaceGame() {
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
     } else if (it.kind === "pokeball") {
-      const points = doubled ? 100 : 50;
+      const poke: PokemonDef = rollPokemon();
+      const basePoints = poke.points;
+      const points = doubled ? basePoints * 2 : basePoints;
       sfx.pokemon();
       setConfetti((c) => c + 1);
-      const poke = POKEMONS[Math.floor(Math.random() * POKEMONS.length)];
+      caughtCountRef.current += 1;
+      setCaught((prev) => {
+        const idx = prev.findIndex((c) => c.pokemon.id === poke.id);
+        const now = Date.now();
+        if (idx >= 0) {
+          const copy = prev.slice();
+          copy[idx] = { ...copy[idx], count: copy[idx].count + 1, lastAt: now };
+          return copy;
+        }
+        return [...prev, { pokemon: poke, count: 1, lastAt: now }];
+      });
       setScore((s) => {
         const next = s + points;
         if (next >= WIN_SCORE) {
@@ -330,7 +342,7 @@ export function SpaceGame() {
         }
         return next;
       });
-      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke} +${points} !`, color: "var(--rainbow)" }]);
+      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
     } else if (it.kind === "asteroid") {
       if (shielded) {
         setShielded(false);
@@ -437,6 +449,27 @@ export function SpaceGame() {
 
         {/* Falling items */}
         {items.map((it) => {
+          if (it.kind === "pokeball") {
+            return (
+              <img
+                key={it.id}
+                src={pokeballImg}
+                alt=""
+                aria-hidden="true"
+                draggable={false}
+                className="absolute z-10 select-none"
+                style={{
+                  left: `${it.x}%`,
+                  top: `${it.y}%`,
+                  width: `${POKEBALL_SIZE}px`,
+                  height: `${POKEBALL_SIZE}px`,
+                  transform: `translate(-50%, -50%) rotate(${it.rot}deg)`,
+                  filter: "drop-shadow(0 0 8px var(--rainbow))",
+                  willChange: "transform",
+                }}
+              />
+            );
+          }
           const v = ITEM_VISUAL[it.kind];
           return (
             <div
