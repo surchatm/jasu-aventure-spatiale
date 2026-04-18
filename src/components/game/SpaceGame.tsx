@@ -82,8 +82,30 @@ export function SpaceGame() {
   const startGame = useCallback(() => {
     reset();
     sfx.start();
+    setSavedIndex(null);
+    setNeedsName(false);
+    setPendingName("");
     setPhase("playing");
   }, [reset]);
+
+  const endGame = useCallback((finalScore: number) => {
+    const current = loadScores();
+    if (qualifiesForTop(finalScore, current)) {
+      setNeedsName(true);
+    } else {
+      setNeedsName(false);
+      setScores(current);
+    }
+    setPhase("over");
+  }, []);
+
+  const submitName = useCallback(() => {
+    const next = saveScore(pendingName, score);
+    setScores(next);
+    const idx = next.findIndex((e) => e.score === score && e.name === (pendingName.trim().slice(0, 12) || "Anonyme"));
+    setSavedIndex(idx >= 0 ? idx : null);
+    setNeedsName(false);
+  }, [pendingName, score]);
 
   // Keyboard
   useEffect(() => {
@@ -207,8 +229,7 @@ export function SpaceGame() {
         if (next >= WIN_SCORE) {
           sfx.win();
           setConfetti((c) => c + 1);
-          setBestScore((b) => Math.max(b, next));
-          setPhase("over");
+          endGame(next);
         }
         return next;
       });
@@ -234,8 +255,7 @@ export function SpaceGame() {
           const next = h - 1;
           if (next <= 0) {
             sfx.gameover();
-            setBestScore((b) => Math.max(b, score));
-            setPhase("over");
+            endGame(score);
           }
           return next;
         });
