@@ -383,9 +383,7 @@ export function SpaceGame() {
       <h1 className="text-center text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
         🚀 L'Aventure Spatiale
       </h1>
-      <p className="text-center text-sm text-muted-foreground">
-        Attrape les ⭐ étoiles, évite les ☄️ astéroïdes, prends les bonus 🌈 et 🛡️ !
-      </p>
+      <p className="text-center text-sm text-muted-foreground"> </p>
 
       <div
         ref={stageRef}
