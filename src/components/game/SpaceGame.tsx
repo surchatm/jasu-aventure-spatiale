@@ -6,9 +6,10 @@ import { Confetti } from "./Confetti";
 import { Leaderboard } from "./Leaderboard";
 import { sfx } from "@/lib/sound";
 import { loadScores, qualifiesForTop, saveScore, type ScoreEntry } from "@/lib/leaderboard";
+import { useMusic } from "@/hooks/use-music";
 
 type Phase = "start" | "playing" | "over";
-type ItemKind = "star" | "asteroid" | "rainbow" | "shield";
+type ItemKind = "star" | "asteroid" | "rainbow" | "shield" | "pokeball";
 
 interface FallingItem {
   id: number;
@@ -39,7 +40,19 @@ const ITEM_VISUAL: Record<ItemKind, { emoji: string; size: number }> = {
   asteroid: { emoji: "☄️", size: 38 },
   rainbow: { emoji: "🌈", size: 38 },
   shield: { emoji: "🛡️", size: 36 },
+  pokeball: { emoji: "🔴", size: 38 },
 };
+
+const POKEMONS = ["🐹", "🦊", "🐉", "🦄", "🐲", "🦎", "🐢", "🦋"];
+const PLANET_EMOJIS = ["🪐", "🌍", "🌕", "🔵"];
+
+interface Planet {
+  id: number;
+  emoji: string;
+  x: number;
+  y: number;
+  size: number;
+}
 
 export function SpaceGame() {
   const [phase, setPhase] = useState<Phase>("start");
@@ -56,6 +69,8 @@ export function SpaceGame() {
   const [pendingName, setPendingName] = useState("");
   const [savedIndex, setSavedIndex] = useState<number | null>(null);
   const [needsName, setNeedsName] = useState(false);
+  const [planets, setPlanets] = useState<Planet[]>([]);
+  const music = useMusic();
 
   useEffect(() => {
     setScores(loadScores());
@@ -66,29 +81,34 @@ export function SpaceGame() {
   const keysRef = useRef<{ left: boolean; right: boolean }>({ left: false, right: false });
   const stageRef = useRef<HTMLDivElement>(null);
   const milestoneRef = useRef(0);
+  const planetTimerRef = useRef(0);
 
   const reset = useCallback(() => {
     setScore(0);
     setHearts(3);
     setItems([]);
     setPopups([]);
+    setPlanets([]);
     setPlayerX(50);
     setShielded(false);
     setDoubled(false);
     elapsedRef.current = 0;
     milestoneRef.current = 0;
+    planetTimerRef.current = 0;
   }, []);
 
   const startGame = useCallback(() => {
     reset();
     sfx.start();
+    music.play();
     setSavedIndex(null);
     setNeedsName(false);
     setPendingName("");
     setPhase("playing");
-  }, [reset]);
+  }, [reset, music]);
 
   const endGame = useCallback((finalScore: number) => {
+    music.stop();
     const current = loadScores();
     if (qualifiesForTop(finalScore, current)) {
       setNeedsName(true);
@@ -97,7 +117,7 @@ export function SpaceGame() {
       setScores(current);
     }
     setPhase("over");
-  }, []);
+  }, [music]);
 
   const submitName = useCallback(() => {
     const next = saveScore(pendingName, score);
@@ -172,10 +192,11 @@ export function SpaceGame() {
       if (Math.random() < spawnChance) {
         const r = Math.random();
         let kind: ItemKind;
-        if (r < 0.55) kind = "star";
-        else if (r < 0.85) kind = "asteroid";
-        else if (r < 0.95) kind = "rainbow";
-        else kind = "shield";
+        if (r < 0.5) kind = "star";
+        else if (r < 0.8) kind = "asteroid";
+        else if (r < 0.9) kind = "rainbow";
+        else if (r < 0.98) kind = "shield";
+        else kind = "pokeball"; // very rare ~2%
         idRef.current += 1;
         newItem = {
           id: idRef.current,
@@ -186,6 +207,36 @@ export function SpaceGame() {
           rot: Math.random() * 360,
         };
       }
+
+      // Spawn stationary planet (rare)
+      planetTimerRef.current += TICK_MS;
+      if (planetTimerRef.current > 8000 && Math.random() < 0.01) {
+        planetTimerRef.current = 0;
+        idRef.current += 1;
+        const newPlanet: Planet = {
+          id: idRef.current,
+          emoji: PLANET_EMOJIS[Math.floor(Math.random() * PLANET_EMOJIS.length)],
+          x: 15 + Math.random() * 70,
+          y: 20 + Math.random() * 45,
+          size: 44 + Math.random() * 24,
+        };
+        setPlanets((p) => [...p, newPlanet].slice(-3));
+      }
+
+      // Planet collision (stationary obstacle)
+      setPlanets((prev) => {
+        for (const pl of prev) {
+          const dx = pl.x - playerX;
+          const dy = pl.y - PLAYER_Y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          const radius = pl.size / 12 + PLAYER_W / 2;
+          if (dist < radius) {
+            handleHit({ id: pl.id, kind: "asteroid", x: pl.x, y: pl.y, speed: 0, rot: 0 });
+            return prev.filter((x) => x.id !== pl.id);
+          }
+        }
+        return prev;
+      });
 
       // Update items + collisions
       setItems((prev) => {
@@ -243,6 +294,20 @@ export function SpaceGame() {
       sfx.power();
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
+    } else if (it.kind === "pokeball") {
+      const points = doubled ? 100 : 50;
+      sfx.pokemon();
+      setConfetti((c) => c + 1);
+      const poke = POKEMONS[Math.floor(Math.random() * POKEMONS.length)];
+      setScore((s) => {
+        const next = s + points;
+        if (next >= WIN_SCORE) {
+          sfx.win();
+          endGame(next);
+        }
+        return next;
+      });
+      setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke} +${points} !`, color: "var(--rainbow)" }]);
     } else if (it.kind === "asteroid") {
       if (shielded) {
         setShielded(false);
@@ -294,12 +359,22 @@ export function SpaceGame() {
           <div className="rounded-full bg-card/80 px-3 py-1.5 text-sm font-bold text-card-foreground backdrop-blur">
             Score : {score}
           </div>
-          <div className="flex gap-1">
-            {Array.from({ length: 3 }).map((_, i) => (
-              <span key={i} className="text-xl" style={{ filter: i < hearts ? "none" : "grayscale(1) opacity(0.3)" }}>
-                ❤️
-              </span>
-            ))}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={music.toggleMute}
+              aria-label={music.muted ? "Activer la musique" : "Couper la musique"}
+              className="rounded-full bg-card/80 px-2 py-1 text-base backdrop-blur transition hover:scale-110"
+            >
+              {music.muted ? "🔇" : "🔊"}
+            </button>
+            <div className="flex gap-1">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <span key={i} className="text-xl" style={{ filter: i < hearts ? "none" : "grayscale(1) opacity(0.3)" }}>
+                  ❤️
+                </span>
+              ))}
+            </div>
           </div>
         </div>
 
@@ -318,6 +393,24 @@ export function SpaceGame() {
         </div>
 
         <Confetti trigger={confetti} />
+
+        {/* Stationary planets (obstacles) */}
+        {planets.map((pl) => (
+          <div
+            key={pl.id}
+            className="absolute z-10 select-none animate-float-slow"
+            style={{
+              left: `${pl.x}%`,
+              top: `${pl.y}%`,
+              fontSize: `${pl.size}px`,
+              lineHeight: 1,
+              transform: "translate(-50%, -50%)",
+              filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.5))",
+            }}
+          >
+            {pl.emoji}
+          </div>
+        ))}
 
         {/* Falling items */}
         {items.map((it) => {
