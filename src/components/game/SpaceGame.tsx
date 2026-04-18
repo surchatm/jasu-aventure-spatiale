@@ -52,7 +52,14 @@ export function SpaceGame() {
   const [doubled, setDoubled] = useState(false);
   const [shake, setShake] = useState(0);
   const [confetti, setConfetti] = useState(0);
-  const [bestScore, setBestScore] = useState(0);
+  const [scores, setScores] = useState<ScoreEntry[]>([]);
+  const [pendingName, setPendingName] = useState("");
+  const [savedIndex, setSavedIndex] = useState<number | null>(null);
+  const [needsName, setNeedsName] = useState(false);
+
+  useEffect(() => {
+    setScores(loadScores());
+  }, []);
 
   const idRef = useRef(0);
   const elapsedRef = useRef(0);
