@@ -236,7 +236,7 @@ export function SpaceGame() {
 
       // Spawn stationary planet (rare)
       planetTimerRef.current += TICK_MS;
-      if (planetTimerRef.current > 8000 && Math.random() < 0.01) {
+      if (planetTimerRef.current > 16000 && Math.random() < 0.004) {
         planetTimerRef.current = 0;
         idRef.current += 1;
         const newPlanet: Planet = {
@@ -246,7 +246,18 @@ export function SpaceGame() {
           y: 20 + Math.random() * 45,
           size: 44 + Math.random() * 24,
         };
-        setPlanets((p) => [...p, newPlanet].slice(-3));
+        setPlanets((p) => {
+          // Replace any existing planet that overlaps with the new one
+          const radiusNew = newPlanet.size / 12;
+          const nonOverlapping = p.filter((existing) => {
+            const dx = existing.x - newPlanet.x;
+            const dy = existing.y - newPlanet.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const minDist = radiusNew + existing.size / 12;
+            return dist >= minDist;
+          });
+          return [...nonOverlapping, newPlanet].slice(-3);
+        });
       }
 
       // Planet collision (stationary obstacle)
