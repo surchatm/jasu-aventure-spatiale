@@ -536,6 +536,7 @@ export function SpaceGame() {
               <li>☄️ Évite les astéroïdes</li>
               <li>🌈 Arc-en-ciel = points x2 !</li>
               <li>🛡️ Le bouclier bloque un coup</li>
+              <li>🔴 Pokéball = attrape un Pokémon !</li>
             </ul>
             <Button
               size="lg"
