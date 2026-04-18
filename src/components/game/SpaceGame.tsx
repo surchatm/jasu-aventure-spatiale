@@ -379,15 +379,14 @@ export function SpaceGame() {
   const won = phase === "over" && score >= WIN_SCORE;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4" style={{ background: "var(--gradient-space)" }}>
-      <h1 className="text-center text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 sm:gap-4 sm:p-4" style={{ background: "var(--gradient-space)" }}>
+      <h1 className="text-center text-xl font-extrabold tracking-tight text-foreground sm:text-4xl">
         🚀 L'Aventure Spatiale
       </h1>
-      <p className="text-center text-sm text-muted-foreground"> </p>
 
       <div
         ref={stageRef}
-        className="relative aspect-[3/4] w-full max-w-md overflow-hidden rounded-3xl border-2 touch-none select-none"
+        className="relative aspect-[3/4] w-full max-w-md max-h-[78vh] sm:max-h-none overflow-hidden rounded-3xl border-2 touch-none select-none"
         style={{
           background: "var(--gradient-space)",
           borderColor: "var(--border)",
@@ -603,7 +602,7 @@ export function SpaceGame() {
                 className="flex w-full max-w-xs flex-col items-center gap-2"
               >
                 <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
-                  🎉 Tu entres dans le Top 10 mondial !
+                  🎉 Tu entres dans le Top 5 mondial !
                 </p>
                 <Input
                   autoFocus
