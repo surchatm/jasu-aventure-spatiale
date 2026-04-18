@@ -394,6 +394,24 @@ export function SpaceGame() {
 
         <Confetti trigger={confetti} />
 
+        {/* Stationary planets (obstacles) */}
+        {planets.map((pl) => (
+          <div
+            key={pl.id}
+            className="absolute z-10 select-none animate-float-slow"
+            style={{
+              left: `${pl.x}%`,
+              top: `${pl.y}%`,
+              fontSize: `${pl.size}px`,
+              lineHeight: 1,
+              transform: "translate(-50%, -50%)",
+              filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.5))",
+            }}
+          >
+            {pl.emoji}
+          </div>
+        ))}
+
         {/* Falling items */}
         {items.map((it) => {
           const v = ITEM_VISUAL[it.kind];
