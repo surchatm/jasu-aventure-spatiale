@@ -558,6 +558,28 @@ export function SpaceGame() {
               {won ? "Tu as gagné !" : "Réessaie !"}
             </h2>
             <p className="text-lg font-bold text-foreground">Score : {score}</p>
+            {caught.length > 0 && (
+              <div className="flex flex-col items-center gap-2">
+                <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                  🔴 {caughtCountRef.current} Pokémon attrapé{caughtCountRef.current > 1 ? "s" : ""}
+                </p>
+                <div className="flex flex-wrap justify-center gap-1">
+                  {caught.map((c) => (
+                    <div key={c.pokemon.id} className="relative h-10 w-10">
+                      <img src={c.pokemon.image} alt={c.pokemon.name} className="h-full w-full object-contain" draggable={false} />
+                      {c.count > 1 && (
+                        <span
+                          className="absolute -bottom-1 -right-1 rounded-full px-1 text-[10px] font-bold"
+                          style={{ background: "var(--primary)", color: "var(--primary-foreground)" }}
+                        >
+                          ×{c.count}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {needsName ? (
               <form
