@@ -1,0 +1,1 @@
+ALTER TABLE public.leaderboard ADD COLUMN IF NOT EXISTS pokemon_caught integer NOT NULL DEFAULT 0;
