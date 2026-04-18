@@ -1,6 +1,6 @@
 import { supabase } from "@/integrations/supabase/client";
 
-const MAX = 10;
+const MAX = 5;
 
 export interface ScoreEntry {
   id?: string;
