@@ -7,6 +7,7 @@ export interface ScoreEntry {
   name: string;
   score: number;
   pokemonCaught: number;
+  pokemonIds: string[];
   date: number;
 }
 
@@ -17,6 +18,7 @@ interface LeaderboardRow {
   player_name: string;
   score: number;
   pokemon_caught: number | null;
+  pokemon_ids: string[] | null;
   created_at: string;
 }
 
@@ -26,6 +28,7 @@ function rowToEntry(row: LeaderboardRow): ScoreEntry {
     name: row.player_name,
     score: row.score,
     pokemonCaught: row.pokemon_caught ?? 0,
+    pokemonIds: row.pokemon_ids ?? [],
     date: new Date(row.created_at).getTime(),
   };
 }
@@ -33,12 +36,12 @@ function rowToEntry(row: LeaderboardRow): ScoreEntry {
 export async function loadScores(): Promise<ScoreEntry[]> {
   const { data, error } = await supabase
     .from("leaderboard")
-    .select("id, player_name, score, pokemon_caught, created_at")
+    .select("id, player_name, score, pokemon_caught, pokemon_ids, created_at")
     .order("score", { ascending: false })
     .order("created_at", { ascending: true })
     .limit(MAX);
   if (error || !data) return [];
-  return data.map(rowToEntry);
+  return (data as unknown as LeaderboardRow[]).map(rowToEntry);
 }
 
 export function qualifiesForTop(score: number, scores: ScoreEntry[]): boolean {
