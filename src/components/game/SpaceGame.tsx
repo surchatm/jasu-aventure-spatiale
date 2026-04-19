@@ -99,6 +99,9 @@ export function SpaceGame() {
   const milestoneRef = useRef(0);
   const planetTimerRef = useRef(0);
   const caughtIdsRef = useRef<Set<string>>(new Set());
+  const playerXRef = useRef(50);
+  const doubledRef = useRef(false);
+  const shieldedRef = useRef(false);
 
   const reset = useCallback(() => {
     setScore(0);
