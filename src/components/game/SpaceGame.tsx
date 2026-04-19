@@ -427,6 +427,11 @@ export function SpaceGame() {
           borderColor: "var(--border)",
           boxShadow: "var(--shadow-glow)",
           animation: shake > 0 ? "shake 0.4s ease-in-out" : undefined,
+          WebkitUserSelect: "none",
+          WebkitTouchCallout: "none",
+          WebkitTapHighlightColor: "transparent",
+          touchAction: "none",
+          overscrollBehavior: "contain",
         }}
         key={`stage-${shake}`}
       >
