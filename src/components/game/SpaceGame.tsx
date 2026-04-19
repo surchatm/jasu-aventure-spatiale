@@ -406,9 +406,8 @@ export function SpaceGame() {
           background: "var(--gradient-space)",
           borderColor: "var(--border)",
           boxShadow: "var(--shadow-glow)",
-          animation: shake > 0 ? "shake 0.4s ease-in-out" : undefined,
+          animation: shake > 0 ? `shake 0.4s ease-in-out ${shake}` : undefined,
         }}
-        key={`stage-${shake}`}
       >
         <StarField />
 
