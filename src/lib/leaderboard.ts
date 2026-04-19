@@ -54,10 +54,12 @@ export async function saveScore(
   name: string,
   score: number,
   pokemonCaught: number,
+  pokemonIds: string[] = [],
 ): Promise<ScoreEntry[]> {
   const cleanName = name.trim().slice(0, 20) || "Anonyme";
   const cleanScore = Math.max(0, Math.floor(Number(score) || 0));
   const cleanCaught = Math.max(0, Math.floor(Number(pokemonCaught) || 0));
+  const cleanIds = Array.from(new Set((pokemonIds || []).filter((s) => typeof s === "string" && s.length > 0))).slice(0, 30);
   if (!cleanName || !Number.isFinite(cleanScore)) {
     return loadScores();
   }
@@ -65,7 +67,8 @@ export async function saveScore(
     player_name: cleanName,
     score: cleanScore,
     pokemon_caught: cleanCaught,
-  });
+    pokemon_ids: cleanIds,
+  } as never);
   return loadScores();
 }
 
