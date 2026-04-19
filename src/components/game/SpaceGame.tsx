@@ -414,7 +414,7 @@ export function SpaceGame() {
   const won = phase === "over" && score >= WIN_SCORE;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 sm:gap-4 sm:p-4" style={{ background: "var(--gradient-space)" }}>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 sm:gap-4 sm:p-4 select-none [overscroll-behavior:contain]" style={{ background: "var(--gradient-space)", WebkitTapHighlightColor: "transparent" }}>
       <h1 className="text-center text-xl font-extrabold tracking-tight text-foreground sm:text-4xl">
         🚀 L'Aventure Spatiale
       </h1>
