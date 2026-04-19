@@ -111,8 +111,11 @@ export function SpaceGame() {
     setPlanets([]);
     setCaught([]);
     setPlayerX(50);
+    playerXRef.current = 50;
     setShielded(false);
+    shieldedRef.current = false;
     setDoubled(false);
+    doubledRef.current = false;
     elapsedRef.current = 0;
     milestoneRef.current = 0;
     planetTimerRef.current = 0;
