@@ -106,6 +106,7 @@ export function SpaceGame() {
 
   const reset = useCallback(() => {
     setScore(0);
+    scoreRef.current = 0;
     setHearts(3);
     setItems([]);
     setPopups([]);
