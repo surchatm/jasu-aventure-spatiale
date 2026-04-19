@@ -129,7 +129,12 @@ export function SpaceGame() {
     music.play();
     setSavedIndex(null);
     setNeedsName(false);
-    setPendingName("");
+    try {
+      const saved = typeof window !== "undefined" ? window.localStorage.getItem("playerName") ?? "" : "";
+      setPendingName(saved);
+    } catch {
+      setPendingName("");
+    }
     setPhase("playing");
   }, [reset, music]);
 
