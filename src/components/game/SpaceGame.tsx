@@ -177,7 +177,7 @@ export function SpaceGame() {
     };
   }, [phase, startGame]);
 
-  // Pointer / touch
+  // Pointer / touch (drag on stage)
   useEffect(() => {
     if (phase !== "playing") return;
     const stage = stageRef.current;
@@ -186,7 +186,9 @@ export function SpaceGame() {
     const move = (clientX: number) => {
       const rect = stage.getBoundingClientRect();
       const pct = ((clientX - rect.left) / rect.width) * 100;
-      setPlayerX(Math.max(PLAYER_W / 2, Math.min(STAGE_W - PLAYER_W / 2, pct)));
+      const clamped = Math.max(PLAYER_W / 2, Math.min(STAGE_W - PLAYER_W / 2, pct));
+      playerXRef.current = clamped;
+      setPlayerX(clamped);
     };
     const onMove = (e: PointerEvent) => move(e.clientX);
     stage.addEventListener("pointermove", onMove);
@@ -197,22 +199,29 @@ export function SpaceGame() {
     };
   }, [phase]);
 
-  // Main game loop
+  // Keep refs in sync with state for the loop to read without re-subscribing
+  useEffect(() => { doubledRef.current = doubled; }, [doubled]);
+  useEffect(() => { shieldedRef.current = shielded; }, [shielded]);
+
+  // Main game loop — stable, only depends on phase
   useEffect(() => {
     if (phase !== "playing") return;
 
     const interval = setInterval(() => {
       elapsedRef.current += TICK_MS;
       const seconds = elapsedRef.current / 1000;
-      const difficulty = 1 + Math.floor(seconds / 10) * 0.25; // ramps every 10s
+      const difficulty = 1 + Math.floor(seconds / 10) * 0.25;
 
-      // Move player from keys
-      setPlayerX((x) => {
-        let next = x;
-        if (keysRef.current.left) next -= 1.6;
-        if (keysRef.current.right) next += 1.6;
-        return Math.max(PLAYER_W / 2, Math.min(STAGE_W - PLAYER_W / 2, next));
-      });
+      // Move player from keys (refs only — no state churn unless position changes)
+      let nextX = playerXRef.current;
+      if (keysRef.current.left) nextX -= 1.6;
+      if (keysRef.current.right) nextX += 1.6;
+      nextX = Math.max(PLAYER_W / 2, Math.min(STAGE_W - PLAYER_W / 2, nextX));
+      if (nextX !== playerXRef.current) {
+        playerXRef.current = nextX;
+        setPlayerX(nextX);
+      }
+      const px = playerXRef.current;
 
       // Spawn item
       const spawnChance = 0.06 + difficulty * 0.02;
@@ -225,7 +234,7 @@ export function SpaceGame() {
         else if (r < 0.82) kind = "asteroid";
         else if (r < 0.92) kind = "rainbow";
         else if (r < 0.997 || allCaught) kind = "shield";
-        else kind = "pokeball"; // ~0.3% of spawns → ~1 per 45-60s
+        else kind = "pokeball";
         idRef.current += 1;
         newItem = {
           id: idRef.current,
@@ -250,7 +259,6 @@ export function SpaceGame() {
           size: 44 + Math.random() * 24,
         };
         setPlanets((p) => {
-          // Replace any existing planet that overlaps with the new one
           const radiusNew = newPlanet.size / 12;
           const nonOverlapping = p.filter((existing) => {
             const dx = existing.x - newPlanet.x;
@@ -266,7 +274,7 @@ export function SpaceGame() {
       // Planet collision (stationary obstacle)
       setPlanets((prev) => {
         for (const pl of prev) {
-          const dx = pl.x - playerX;
+          const dx = pl.x - px;
           const dy = pl.y - PLAYER_Y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           const radius = pl.size / 12 + PLAYER_W / 2;
@@ -284,11 +292,10 @@ export function SpaceGame() {
         const remaining: FallingItem[] = [];
         for (const it of advanced) {
           if (it.y > 110) continue;
-          // collision when item near player band
           const near =
             it.y > PLAYER_Y - 6 &&
             it.y < PLAYER_Y + 8 &&
-            Math.abs(it.x - playerX) < PLAYER_W / 2 + 4;
+            Math.abs(it.x - px) < PLAYER_W / 2 + 4;
           if (near) {
             handleHit(it);
           } else {
@@ -302,7 +309,7 @@ export function SpaceGame() {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase, playerX, doubled, shielded]);
+  }, [phase]);
 
   function handleHit(it: FallingItem) {
     idRef.current += 1;
