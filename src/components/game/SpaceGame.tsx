@@ -163,7 +163,7 @@ export function SpaceGame() {
     } catch {
       // ignore
     }
-    const next = await saveScore(cleanName, score, caughtCountRef.current);
+    const next = await saveScore(cleanName, score, caughtCountRef.current, Array.from(caughtIdsRef.current));
     setScores(next);
     const idx = next.findIndex((e) => e.score === score && e.name === cleanName);
     setSavedIndex(idx >= 0 ? idx : null);
