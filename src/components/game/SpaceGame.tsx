@@ -461,13 +461,9 @@ export function SpaceGame() {
         {items.map((it) => {
           if (it.kind === "pokeball") {
             return (
-              <img
+              <div
                 key={it.id}
-                src={pokeballImg}
-                alt=""
-                aria-hidden="true"
-                draggable={false}
-                className="absolute z-10 select-none"
+                className="absolute z-10 select-none flex items-center justify-center"
                 style={{
                   left: `${it.x}%`,
                   top: `${it.y}%`,
@@ -475,9 +471,29 @@ export function SpaceGame() {
                   height: `${POKEBALL_SIZE}px`,
                   transform: `translate(-50%, -50%) rotate(${it.rot}deg)`,
                   filter: "drop-shadow(0 0 8px var(--rainbow))",
-                  willChange: "transform",
                 }}
-              />
+              >
+                <img
+                  src={pokeballImg}
+                  alt=""
+                  aria-hidden="true"
+                  draggable={false}
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement;
+                    img.style.display = "none";
+                    const parent = img.parentElement;
+                    if (parent && !parent.querySelector(".pb-fallback")) {
+                      const span = document.createElement("span");
+                      span.textContent = "🔴";
+                      span.className = "pb-fallback";
+                      span.style.fontSize = `${POKEBALL_SIZE}px`;
+                      span.style.lineHeight = "1";
+                      parent.appendChild(span);
+                    }
+                  }}
+                  style={{ width: "100%", height: "100%", pointerEvents: "none", userSelect: "none" }}
+                />
+              </div>
             );
           }
           const v = ITEM_VISUAL[it.kind];
