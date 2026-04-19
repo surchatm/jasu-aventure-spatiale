@@ -334,6 +334,7 @@ export function SpaceGame() {
       sfx.collect();
       setScore((s) => {
         const next = s + points;
+        scoreRef.current = next;
         const milestone = Math.floor(next / 50);
         if (milestone > milestoneRef.current) {
           milestoneRef.current = milestone;
@@ -372,6 +373,7 @@ export function SpaceGame() {
         setCaught((prev) => [...prev, { pokemon: poke, count: 1, lastAt: Date.now() }]);
         setScore((s) => {
           const next = s + points;
+          scoreRef.current = next;
           if (next >= WIN_SCORE) {
             sfx.win();
             endGame(next);
@@ -393,7 +395,7 @@ export function SpaceGame() {
           const next = h - 1;
           if (next <= 0) {
             sfx.gameover();
-            endGame(score);
+            endGame(scoreRef.current);
           }
           return next;
         });
