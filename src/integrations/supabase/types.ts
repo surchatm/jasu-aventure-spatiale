@@ -20,6 +20,7 @@ export type Database = {
           id: string
           player_name: string
           pokemon_caught: number
+          pokemon_ids: string[]
           score: number
         }
         Insert: {
@@ -27,6 +28,7 @@ export type Database = {
           id?: string
           player_name: string
           pokemon_caught?: number
+          pokemon_ids?: string[]
           score: number
         }
         Update: {
@@ -34,6 +36,7 @@ export type Database = {
           id?: string
           player_name?: string
           pokemon_caught?: number
+          pokemon_ids?: string[]
           score?: number
         }
         Relationships: []
