@@ -156,6 +156,11 @@ export function SpaceGame() {
       setNeedsName(false);
       return;
     }
+    try {
+      if (typeof window !== "undefined") window.localStorage.setItem("playerName", cleanName);
+    } catch {
+      // ignore
+    }
     const next = await saveScore(cleanName, score, caughtCountRef.current);
     setScores(next);
     const idx = next.findIndex((e) => e.score === score && e.name === cleanName);
