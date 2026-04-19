@@ -695,26 +695,11 @@ export function SpaceGame() {
         )}
       </div>
 
-      {/* On-screen controls for touch */}
+      {/* Mobile hint while playing */}
       {phase === "playing" && (
-        <div className="flex w-full max-w-md gap-3 sm:hidden">
-          <Button
-            className="h-16 flex-1 rounded-2xl text-2xl font-bold"
-            onPointerDown={() => (keysRef.current.left = true)}
-            onPointerUp={() => (keysRef.current.left = false)}
-            onPointerLeave={() => (keysRef.current.left = false)}
-          >
-            ◀
-          </Button>
-          <Button
-            className="h-16 flex-1 rounded-2xl text-2xl font-bold"
-            onPointerDown={() => (keysRef.current.right = true)}
-            onPointerUp={() => (keysRef.current.right = false)}
-            onPointerLeave={() => (keysRef.current.right = false)}
-          >
-            ▶
-          </Button>
-        </div>
+        <p className="text-[11px] text-muted-foreground sm:hidden">
+          👆 Maintiens à gauche ou à droite de la zone de jeu
+        </p>
       )}
     </div>
   );
