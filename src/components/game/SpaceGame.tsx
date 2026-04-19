@@ -129,7 +129,12 @@ export function SpaceGame() {
     music.play();
     setSavedIndex(null);
     setNeedsName(false);
-    setPendingName("");
+    try {
+      const saved = typeof window !== "undefined" ? window.localStorage.getItem("playerName") ?? "" : "";
+      setPendingName(saved);
+    } catch {
+      setPendingName("");
+    }
     setPhase("playing");
   }, [reset, music]);
 
@@ -150,6 +155,11 @@ export function SpaceGame() {
     if (!Number.isFinite(score) || score <= 0) {
       setNeedsName(false);
       return;
+    }
+    try {
+      if (typeof window !== "undefined") window.localStorage.setItem("playerName", cleanName);
+    } catch {
+      // ignore
     }
     const next = await saveScore(cleanName, score, caughtCountRef.current);
     setScores(next);
@@ -594,7 +604,10 @@ export function SpaceGame() {
 
         {/* Game over overlay */}
         {phase === "over" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/85 p-6 text-center backdrop-blur-sm animate-pop">
+          <div
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/85 p-6 text-center backdrop-blur-sm animate-pop"
+            style={{ touchAction: "auto", WebkitUserSelect: "auto", userSelect: "auto" }}
+          >
             <div className="text-5xl">{won ? "🏆" : "💫"}</div>
             <h2 className="text-2xl font-extrabold text-foreground">
               {won ? "Tu as gagné !" : "Réessaie !"}
@@ -640,7 +653,12 @@ export function SpaceGame() {
                   value={pendingName}
                   onChange={(e) => setPendingName(e.target.value)}
                   placeholder="Ton prénom"
+                  type="text"
+                  inputMode="text"
+                  autoComplete="given-name"
+                  enterKeyHint="done"
                   className="h-11 rounded-full text-center text-base font-bold"
+                  style={{ touchAction: "auto", WebkitUserSelect: "text", userSelect: "text", fontSize: "16px" }}
                 />
                 <Button
                   type="submit"
