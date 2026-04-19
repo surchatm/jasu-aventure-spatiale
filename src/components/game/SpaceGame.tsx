@@ -655,23 +655,49 @@ export function SpaceGame() {
 
       {/* On-screen controls for touch */}
       {phase === "playing" && (
-        <div className="flex w-full max-w-md gap-3 sm:hidden">
-          <Button
-            className="h-16 flex-1 rounded-2xl text-2xl font-bold"
-            onPointerDown={() => (keysRef.current.left = true)}
-            onPointerUp={() => (keysRef.current.left = false)}
-            onPointerLeave={() => (keysRef.current.left = false)}
-          >
-            ◀
-          </Button>
-          <Button
-            className="h-16 flex-1 rounded-2xl text-2xl font-bold"
-            onPointerDown={() => (keysRef.current.right = true)}
-            onPointerUp={() => (keysRef.current.right = false)}
-            onPointerLeave={() => (keysRef.current.right = false)}
-          >
-            ▶
-          </Button>
+        <div
+          className="flex w-full max-w-md gap-3 sm:hidden select-none"
+          style={{
+            touchAction: "none",
+            WebkitUserSelect: "none",
+            userSelect: "none",
+            WebkitTouchCallout: "none",
+            WebkitTapHighlightColor: "transparent",
+          }}
+          onContextMenu={(e) => e.preventDefault()}
+        >
+          {(["left", "right"] as const).map((dir) => (
+            <button
+              key={dir}
+              type="button"
+              aria-label={dir === "left" ? "Aller à gauche" : "Aller à droite"}
+              draggable={false}
+              onPointerDown={(e) => {
+                e.preventDefault();
+                (e.currentTarget as HTMLButtonElement).setPointerCapture(e.pointerId);
+                keysRef.current[dir] = true;
+              }}
+              onPointerUp={(e) => {
+                e.preventDefault();
+                keysRef.current[dir] = false;
+              }}
+              onPointerCancel={() => (keysRef.current[dir] = false)}
+              onPointerLeave={() => (keysRef.current[dir] = false)}
+              onContextMenu={(e) => e.preventDefault()}
+              onDragStart={(e) => e.preventDefault()}
+              className="h-16 flex-1 rounded-2xl text-2xl font-bold bg-primary text-primary-foreground shadow-lg active:scale-95 transition-transform select-none"
+              style={{
+                touchAction: "none",
+                WebkitUserSelect: "none",
+                userSelect: "none",
+                WebkitTouchCallout: "none",
+                WebkitTapHighlightColor: "transparent",
+                WebkitUserDrag: "none",
+              } as React.CSSProperties}
+            >
+              {dir === "left" ? "◀" : "▶"}
+            </button>
+          ))}
         </div>
       )}
     </div>
