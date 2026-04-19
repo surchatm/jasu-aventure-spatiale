@@ -315,7 +315,7 @@ export function SpaceGame() {
     idRef.current += 1;
     const popupId = idRef.current;
     if (it.kind === "star") {
-      const points = doubled ? 20 : 10;
+      const points = doubledRef.current ? 20 : 10;
       sfx.collect();
       setScore((s) => {
         const next = s + points;
@@ -334,21 +334,22 @@ export function SpaceGame() {
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `+${points}`, color: "var(--star)" }]);
     } else if (it.kind === "rainbow") {
       sfx.power();
+      doubledRef.current = true;
       setDoubled(true);
-      setTimeout(() => setDoubled(false), 5000);
+      setTimeout(() => { doubledRef.current = false; setDoubled(false); }, 5000);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "x2 !", color: "var(--rainbow)" }]);
     } else if (it.kind === "shield") {
       sfx.power();
+      shieldedRef.current = true;
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
     } else if (it.kind === "pokeball") {
       const poke = rollPokemon(Array.from(caughtIdsRef.current));
       if (!poke) {
-        // Already caught them all — treat as a small bonus
         sfx.power();
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Pokédex complet !", color: "var(--rainbow)" }]);
       } else {
-        const points = doubled ? poke.points * 2 : poke.points;
+        const points = doubledRef.current ? poke.points * 2 : poke.points;
         sfx.pokemon();
         setConfetti((c) => c + 1);
         caughtCountRef.current += 1;
@@ -365,7 +366,8 @@ export function SpaceGame() {
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
       }
     } else if (it.kind === "asteroid") {
-      if (shielded) {
+      if (shieldedRef.current) {
+        shieldedRef.current = false;
         setShielded(false);
         sfx.power();
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bloqué !", color: "var(--shield)" }]);
