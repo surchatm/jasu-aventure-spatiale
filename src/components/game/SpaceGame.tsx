@@ -102,6 +102,7 @@ export function SpaceGame() {
   const playerXRef = useRef(50);
   const doubledRef = useRef(false);
   const shieldedRef = useRef(false);
+  const scoreRef = useRef(0);
 
   const reset = useCallback(() => {
     setScore(0);
