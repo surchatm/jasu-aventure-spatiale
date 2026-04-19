@@ -174,23 +174,58 @@ export function SpaceGame() {
     };
   }, [phase, startGame]);
 
-  // Pointer / touch
+  // Pointer / touch — hold left or right half of the stage to move continuously.
+  // Uses pointer events with capture so movement keeps working even if the finger
+  // drifts. We only update a ref (no re-renders); the game loop reads it.
   useEffect(() => {
     if (phase !== "playing") return;
     const stage = stageRef.current;
     if (!stage) return;
 
-    const move = (clientX: number) => {
+    const activePointers = new Map<number, "left" | "right">();
+
+    const sideFor = (clientX: number): "left" | "right" => {
       const rect = stage.getBoundingClientRect();
-      const pct = ((clientX - rect.left) / rect.width) * 100;
-      setPlayerX(Math.max(PLAYER_W / 2, Math.min(STAGE_W - PLAYER_W / 2, pct)));
+      return clientX - rect.left < rect.width / 2 ? "left" : "right";
     };
-    const onMove = (e: PointerEvent) => move(e.clientX);
+
+    const apply = () => {
+      const sides = new Set(activePointers.values());
+      keysRef.current.left = sides.has("left");
+      keysRef.current.right = sides.has("right");
+    };
+
+    const onDown = (e: PointerEvent) => {
+      e.preventDefault();
+      stage.setPointerCapture(e.pointerId);
+      activePointers.set(e.pointerId, sideFor(e.clientX));
+      apply();
+    };
+    const onMove = (e: PointerEvent) => {
+      if (!activePointers.has(e.pointerId)) return;
+      e.preventDefault();
+      activePointers.set(e.pointerId, sideFor(e.clientX));
+      apply();
+    };
+    const onUp = (e: PointerEvent) => {
+      if (!activePointers.has(e.pointerId)) return;
+      activePointers.delete(e.pointerId);
+      apply();
+    };
+
+    stage.addEventListener("pointerdown", onDown);
     stage.addEventListener("pointermove", onMove);
-    stage.addEventListener("pointerdown", onMove);
+    stage.addEventListener("pointerup", onUp);
+    stage.addEventListener("pointercancel", onUp);
+    stage.addEventListener("pointerleave", onUp);
     return () => {
+      stage.removeEventListener("pointerdown", onDown);
       stage.removeEventListener("pointermove", onMove);
-      stage.removeEventListener("pointerdown", onMove);
+      stage.removeEventListener("pointerup", onUp);
+      stage.removeEventListener("pointercancel", onUp);
+      stage.removeEventListener("pointerleave", onUp);
+      keysRef.current.left = false;
+      keysRef.current.right = false;
     };
   }, [phase]);
 
@@ -379,7 +414,7 @@ export function SpaceGame() {
   const won = phase === "over" && score >= WIN_SCORE;
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 sm:gap-4 sm:p-4" style={{ background: "var(--gradient-space)" }}>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 sm:gap-4 sm:p-4 select-none [overscroll-behavior:contain]" style={{ background: "var(--gradient-space)", WebkitTapHighlightColor: "transparent" }}>
       <h1 className="text-center text-xl font-extrabold tracking-tight text-foreground sm:text-4xl">
         🚀 L'Aventure Spatiale
       </h1>
@@ -392,6 +427,11 @@ export function SpaceGame() {
           borderColor: "var(--border)",
           boxShadow: "var(--shadow-glow)",
           animation: shake > 0 ? "shake 0.4s ease-in-out" : undefined,
+          WebkitUserSelect: "none",
+          WebkitTouchCallout: "none",
+          WebkitTapHighlightColor: "transparent",
+          touchAction: "none",
+          overscrollBehavior: "contain",
         }}
         key={`stage-${shake}`}
       >
@@ -558,7 +598,9 @@ export function SpaceGame() {
               ▶ Commencer
             </Button>
             <Leaderboard scores={scores} />
-            <p className="text-[11px] text-muted-foreground sm:text-xs">Flèches ← → ou doigt sur l'écran</p>
+            <p className="text-[11px] text-muted-foreground sm:text-xs">
+              Flèches ← → au clavier · Sur mobile, maintiens le doigt à gauche ou à droite de l'écran
+            </p>
           </div>
         )}
 
@@ -653,26 +695,11 @@ export function SpaceGame() {
         )}
       </div>
 
-      {/* On-screen controls for touch */}
+      {/* Mobile hint while playing */}
       {phase === "playing" && (
-        <div className="flex w-full max-w-md gap-3 sm:hidden">
-          <Button
-            className="h-16 flex-1 rounded-2xl text-2xl font-bold"
-            onPointerDown={() => (keysRef.current.left = true)}
-            onPointerUp={() => (keysRef.current.left = false)}
-            onPointerLeave={() => (keysRef.current.left = false)}
-          >
-            ◀
-          </Button>
-          <Button
-            className="h-16 flex-1 rounded-2xl text-2xl font-bold"
-            onPointerDown={() => (keysRef.current.right = true)}
-            onPointerUp={() => (keysRef.current.right = false)}
-            onPointerLeave={() => (keysRef.current.right = false)}
-          >
-            ▶
-          </Button>
-        </div>
+        <p className="text-[11px] text-muted-foreground sm:hidden">
+          👆 Maintiens à gauche ou à droite de la zone de jeu
+        </p>
       )}
     </div>
   );
