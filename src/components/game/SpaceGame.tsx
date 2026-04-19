@@ -604,7 +604,10 @@ export function SpaceGame() {
 
         {/* Game over overlay */}
         {phase === "over" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/85 p-6 text-center backdrop-blur-sm animate-pop">
+          <div
+            className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-3 overflow-y-auto bg-background/85 p-6 text-center backdrop-blur-sm animate-pop"
+            style={{ touchAction: "auto", WebkitUserSelect: "auto", userSelect: "auto" }}
+          >
             <div className="text-5xl">{won ? "🏆" : "💫"}</div>
             <h2 className="text-2xl font-extrabold text-foreground">
               {won ? "Tu as gagné !" : "Réessaie !"}
