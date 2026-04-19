@@ -44,7 +44,7 @@ export async function loadScores(): Promise<ScoreEntry[]> {
 export function qualifiesForTop(score: number, scores: ScoreEntry[]): boolean {
   if (!Number.isFinite(score) || score <= 0) return false;
   if (scores.length < MAX) return true;
-  return score > scores[scores.length - 1].score;
+  return score >= scores[scores.length - 1].score;
 }
 
 export async function saveScore(
