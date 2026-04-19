@@ -653,7 +653,12 @@ export function SpaceGame() {
                   value={pendingName}
                   onChange={(e) => setPendingName(e.target.value)}
                   placeholder="Ton prénom"
+                  type="text"
+                  inputMode="text"
+                  autoComplete="given-name"
+                  enterKeyHint="done"
                   className="h-11 rounded-full text-center text-base font-bold"
+                  style={{ touchAction: "auto", WebkitUserSelect: "text", userSelect: "text", fontSize: "16px" }}
                 />
                 <Button
                   type="submit"
