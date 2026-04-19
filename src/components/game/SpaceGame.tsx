@@ -598,7 +598,9 @@ export function SpaceGame() {
               ▶ Commencer
             </Button>
             <Leaderboard scores={scores} />
-            <p className="text-[11px] text-muted-foreground sm:text-xs">Flèches ← → ou doigt sur l'écran</p>
+            <p className="text-[11px] text-muted-foreground sm:text-xs">
+              Flèches ← → au clavier · Sur mobile, maintiens le doigt à gauche ou à droite de l'écran
+            </p>
           </div>
         )}
 
