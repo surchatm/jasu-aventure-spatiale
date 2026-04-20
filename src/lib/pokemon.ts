@@ -60,7 +60,7 @@ export const POKEMONS: PokemonDef[] = [
 export function rollPokemon(excludeIds: string[] = [], rarityTier: number = 0): PokemonDef | null {
   const pool = POKEMONS.filter((p) => !excludeIds.includes(p.id));
   if (pool.length === 0) return null;
-  // Each tier (per +500 score) boosts rare x1.25 and legendary x1.6, capped at tier 8
+  // Each tier (per +800 score) boosts rare x1.25 and legendary x1.6, capped at tier 8
   const t = Math.max(0, Math.min(8, rarityTier));
   const rareMult = Math.pow(1.25, t);
   const legendMult = Math.pow(1.6, t);
