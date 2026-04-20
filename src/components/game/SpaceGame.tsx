@@ -635,6 +635,35 @@ export function SpaceGame() {
           </div>
         )}
 
+        {/* Legendary reveal overlay */}
+        {legendaryReveal && (
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm animate-pop p-6 text-center">
+            <div
+              className="text-sm font-extrabold uppercase tracking-widest"
+              style={{ color: "var(--rainbow)", textShadow: "0 0 12px var(--rainbow)" }}
+            >
+              ✨ Pokémon Légendaire ! ✨
+            </div>
+            <div
+              className="rounded-full p-2 animate-glow-pulse"
+              style={{ background: "var(--gradient-rainbow)" }}
+            >
+              <img
+                src={legendaryReveal.pokemon.image}
+                alt={legendaryReveal.pokemon.name}
+                className="h-40 w-40 object-contain animate-float-slow"
+                draggable={false}
+              />
+            </div>
+            <h2 className="text-3xl font-extrabold text-foreground">
+              {legendaryReveal.pokemon.name}
+            </h2>
+            <p className="text-lg font-bold" style={{ color: "var(--accent)" }}>
+              Félicitations ! +{legendaryReveal.points} points
+            </p>
+          </div>
+        )}
+
         {/* Start overlay */}
         {phase === "start" && (
           <div className="absolute inset-0 z-40 flex flex-col items-center justify-start gap-2 overflow-y-auto bg-background/70 p-4 text-center backdrop-blur-sm sm:justify-center sm:gap-3 sm:p-6">
