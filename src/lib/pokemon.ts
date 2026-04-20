@@ -69,6 +69,34 @@ export function rollPokemon(excludeIds: string[] = []): PokemonDef | null {
   return pool[0];
 }
 
+const CAUGHT_STORAGE_KEY = "caughtPokemonIds";
+
+export function loadCaughtIds(): Set<string> {
+  if (typeof window === "undefined") return new Set();
+  try {
+    const raw = window.localStorage.getItem(CAUGHT_STORAGE_KEY);
+    if (!raw) return new Set();
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return new Set(parsed.filter((x): x is string => typeof x === "string"));
+    return new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+export function saveCaughtIds(ids: Iterable<string>): Set<string> {
+  const merged = loadCaughtIds();
+  for (const id of ids) merged.add(id);
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(CAUGHT_STORAGE_KEY, JSON.stringify(Array.from(merged)));
+    } catch {
+      // ignore
+    }
+  }
+  return merged;
+}
+
 export const RARITY_COLOR: Record<Rarity, string> = {
   common: "var(--muted)",
   rare: "var(--accent)",

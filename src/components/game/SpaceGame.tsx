@@ -7,7 +7,9 @@ import { Leaderboard } from "./Leaderboard";
 import { PokemonHUD, type CaughtEntry } from "./PokemonHUD";
 import { sfx } from "@/lib/sound";
 import { loadScores, qualifiesForTop, saveScore, subscribeToLeaderboard, type ScoreEntry } from "@/lib/leaderboard";
-import { rollPokemon, type PokemonDef } from "@/lib/pokemon";
+import { rollPokemon, loadCaughtIds, saveCaughtIds, type PokemonDef } from "@/lib/pokemon";
+import { Pokedex } from "./Pokedex";
+import { BookOpen } from "lucide-react";
 import { useMusic } from "@/hooks/use-music";
 import pokeballImg from "@/assets/pokeball.png";
 import planetEarth from "@/assets/planet/Earth.png";
@@ -93,6 +95,8 @@ export function SpaceGame() {
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [caught, setCaught] = useState<CaughtEntry[]>([]);
   const [legendaryReveal, setLegendaryReveal] = useState<{ pokemon: PokemonDef; points: number } | null>(null);
+  const [pokedexOpen, setPokedexOpen] = useState(false);
+  const [caughtIdsAll, setCaughtIdsAll] = useState<Set<string>>(() => loadCaughtIds());
   const caughtCountRef = useRef(0);
   const music = useMusic();
 
@@ -410,6 +414,7 @@ export function SpaceGame() {
         setConfetti((c) => c + 1);
         caughtCountRef.current += 1;
         caughtIdsRef.current.add(poke.id);
+        setCaughtIdsAll(saveCaughtIds([poke.id]));
         setCaught((prev) => [...prev, { pokemon: poke, count: 1, lastAt: Date.now() }]);
         setScore((s) => {
           const next = s + points;
@@ -679,14 +684,29 @@ export function SpaceGame() {
                 <span>Pokéball = attrape un Pokémon (rare !)</span>
               </li>
             </ul>
-            <Button
-              size="lg"
-              onClick={startGame}
-              className="h-12 rounded-full px-6 text-base font-bold shadow-lg transition-transform hover:scale-105 sm:h-14 sm:px-8 sm:text-lg"
-              style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
-            >
-              ▶ Commencer
-            </Button>
+            <div className="flex flex-wrap items-center justify-center gap-2">
+              <Button
+                size="lg"
+                onClick={startGame}
+                className="h-12 rounded-full px-6 text-base font-bold shadow-lg transition-transform hover:scale-105 sm:h-14 sm:px-8 sm:text-lg"
+                style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
+              >
+                ▶ Commencer
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => {
+                  setCaughtIdsAll(loadCaughtIds());
+                  setPokedexOpen(true);
+                }}
+                className="h-12 rounded-full px-5 text-base font-bold transition-transform hover:scale-105 sm:h-14 sm:px-6 sm:text-lg"
+              >
+                <BookOpen className="h-5 w-5" />
+                Pokédex
+              </Button>
+            </div>
+            <Pokedex open={pokedexOpen} onOpenChange={setPokedexOpen} caughtIds={caughtIdsAll} />
             <Leaderboard scores={scores} />
             <p className="text-[11px] text-muted-foreground sm:text-xs">Flèches ← → ou doigt sur l'écran</p>
           </div>
