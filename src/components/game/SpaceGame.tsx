@@ -283,25 +283,44 @@ export function SpaceGame() {
       // Spawn stationary planet (rare)
       planetTimerRef.current += TICK_MS;
       if (planetTimerRef.current > 16000 && Math.random() < 0.004) {
-        planetTimerRef.current = 0;
-        idRef.current += 1;
-        const newPlanet: Planet = {
-          id: idRef.current,
-          image: PLANET_IMAGES[Math.floor(Math.random() * PLANET_IMAGES.length)],
-          x: 15 + Math.random() * 70,
-          y: 20 + Math.random() * 45,
-          size: 56 + Math.random() * 36,
-        };
         setPlanets((p) => {
-          const radiusNew = newPlanet.size / 12;
-          const nonOverlapping = p.filter((existing) => {
-            const dx = existing.x - newPlanet.x;
-            const dy = existing.y - newPlanet.y;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-            const minDist = radiusNew + existing.size / 12;
-            return dist >= minDist;
-          });
-          return [...nonOverlapping, newPlanet].slice(-3);
+          // Skip if 3 planets already on screen
+          if (p.length >= 3) return p;
+          // Pick an image not already on screen
+          const usedImages = new Set(p.map((pl) => pl.image));
+          const available = PLANET_IMAGES.filter((img) => !usedImages.has(img));
+          if (available.length === 0) return p;
+          const size = 56 + Math.random() * 36;
+          const radiusNew = size / 12;
+          const MIN_GAP = 12; // extra padding between planets (in % units)
+          // Try several positions to find one that isn't too close to existing planets
+          let chosen: { x: number; y: number } | null = null;
+          for (let attempt = 0; attempt < 20; attempt++) {
+            const x = 15 + Math.random() * 70;
+            const y = 20 + Math.random() * 45;
+            const tooClose = p.some((existing) => {
+              const dx = existing.x - x;
+              const dy = existing.y - y;
+              const dist = Math.sqrt(dx * dx + dy * dy);
+              const minDist = radiusNew + existing.size / 12 + MIN_GAP;
+              return dist < minDist;
+            });
+            if (!tooClose) {
+              chosen = { x, y };
+              break;
+            }
+          }
+          if (!chosen) return p;
+          planetTimerRef.current = 0;
+          idRef.current += 1;
+          const newPlanet: Planet = {
+            id: idRef.current,
+            image: available[Math.floor(Math.random() * available.length)],
+            x: chosen.x,
+            y: chosen.y,
+            size,
+          };
+          return [...p, newPlanet];
         });
       }
 
