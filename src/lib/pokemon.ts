@@ -14,6 +14,8 @@ import evoli from "@/assets/pokemon/evoli.png";
 import onix from "@/assets/pokemon/onix.png";
 import tortank from "@/assets/pokemon/tortank.png";
 import sulfura from "@/assets/pokemon/sulfura.png";
+import rayquaza from "@/assets/pokemon/rayquaza.png";
+import blizzeval from "@/assets/pokemon/blizzeval.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
@@ -43,6 +45,8 @@ export const POKEMONS: PokemonDef[] = [
   { id: "tortank", name: "Tortank", image: tortank, points: 350, rarity: "rare", weight: 4 },
   { id: "sulfura", name: "Sulfura", image: sulfura, points: 450, rarity: "legendary", weight: 3 },
   { id: "mewto", name: "Mewto", image: mewto, points: 500, rarity: "legendary", weight: 3 },
+  { id: "blizzeval", name: "Blizzeval", image: blizzeval, points: 550, rarity: "legendary", weight: 2 },
+  { id: "rayquaza", name: "Rayquaza", image: rayquaza, points: 600, rarity: "legendary", weight: 2 },
 ];
 
 export function rollPokemon(excludeIds: string[] = []): PokemonDef | null {
