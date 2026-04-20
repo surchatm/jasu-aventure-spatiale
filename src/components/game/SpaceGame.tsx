@@ -92,6 +92,7 @@ export function SpaceGame() {
   const [needsName, setNeedsName] = useState(false);
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [caught, setCaught] = useState<CaughtEntry[]>([]);
+  const [legendaryReveal, setLegendaryReveal] = useState<{ pokemon: PokemonDef; points: number } | null>(null);
   const caughtCountRef = useRef(0);
   const music = useMusic();
 
@@ -240,6 +241,7 @@ export function SpaceGame() {
   // Main game loop — stable, only depends on phase
   useEffect(() => {
     if (phase !== "playing") return;
+    if (legendaryReveal) return;
 
     const interval = setInterval(() => {
       elapsedRef.current += TICK_MS;
@@ -362,7 +364,7 @@ export function SpaceGame() {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
+  }, [phase, legendaryReveal]);
 
   function handleHit(it: FallingItem) {
     idRef.current += 1;
@@ -419,6 +421,10 @@ export function SpaceGame() {
           return next;
         });
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
+        if (poke.rarity === "legendary") {
+          setLegendaryReveal({ pokemon: poke, points });
+          setTimeout(() => setLegendaryReveal(null), 3500);
+        }
       }
     } else if (it.kind === "asteroid") {
       if (shieldedRef.current) {
@@ -626,6 +632,35 @@ export function SpaceGame() {
             }}
           >
             🚀
+          </div>
+        )}
+
+        {/* Legendary reveal overlay */}
+        {legendaryReveal && (
+          <div className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-background/80 backdrop-blur-sm animate-pop p-6 text-center">
+            <div
+              className="text-sm font-extrabold uppercase tracking-widest"
+              style={{ color: "var(--rainbow)", textShadow: "0 0 12px var(--rainbow)" }}
+            >
+              ✨ Pokémon Légendaire ! ✨
+            </div>
+            <div
+              className="rounded-full p-2 animate-glow-pulse"
+              style={{ background: "var(--gradient-rainbow)" }}
+            >
+              <img
+                src={legendaryReveal.pokemon.image}
+                alt={legendaryReveal.pokemon.name}
+                className="h-40 w-40 object-contain animate-float-slow"
+                draggable={false}
+              />
+            </div>
+            <h2 className="text-3xl font-extrabold text-foreground">
+              {legendaryReveal.pokemon.name}
+            </h2>
+            <p className="text-lg font-bold" style={{ color: "var(--accent)" }}>
+              Félicitations ! +{legendaryReveal.points} points
+            </p>
           </div>
         )}
 
