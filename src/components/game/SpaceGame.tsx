@@ -92,6 +92,7 @@ export function SpaceGame() {
   const [needsName, setNeedsName] = useState(false);
   const [planets, setPlanets] = useState<Planet[]>([]);
   const [caught, setCaught] = useState<CaughtEntry[]>([]);
+  const [legendaryReveal, setLegendaryReveal] = useState<{ pokemon: PokemonDef; points: number } | null>(null);
   const caughtCountRef = useRef(0);
   const music = useMusic();
 
