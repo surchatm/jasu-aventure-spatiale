@@ -241,6 +241,7 @@ export function SpaceGame() {
   // Main game loop — stable, only depends on phase
   useEffect(() => {
     if (phase !== "playing") return;
+    if (legendaryReveal) return;
 
     const interval = setInterval(() => {
       elapsedRef.current += TICK_MS;
