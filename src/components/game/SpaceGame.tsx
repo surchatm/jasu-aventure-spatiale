@@ -688,7 +688,7 @@ export function SpaceGame() {
               <Button
                 size="lg"
                 onClick={startGame}
-                className="h-12 rounded-full px-6 text-base font-bold shadow-lg transition-transform hover:scale-105 sm:h-14 sm:px-8 sm:text-lg"
+                className="h-10 rounded-full px-5 text-sm font-bold shadow-lg transition-transform hover:scale-105 sm:h-12 sm:px-7 sm:text-base"
                 style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)", boxShadow: "var(--shadow-glow)" }}
               >
                 ▶ Commencer
@@ -700,9 +700,9 @@ export function SpaceGame() {
                   setCaughtIdsAll(loadCaughtIds());
                   setPokedexOpen(true);
                 }}
-                className="h-12 rounded-full px-5 text-base font-bold transition-transform hover:scale-105 sm:h-14 sm:px-6 sm:text-lg"
+                className="h-10 rounded-full px-4 text-sm font-bold transition-transform hover:scale-105 sm:h-12 sm:px-5 sm:text-base"
               >
-                <BookOpen className="h-5 w-5" />
+                <BookOpen className="h-4 w-4" />
                 Pokédex
               </Button>
             </div>
