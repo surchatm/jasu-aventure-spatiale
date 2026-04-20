@@ -720,7 +720,7 @@ export function SpaceGame() {
           >
             <div className="text-5xl">{won ? "🏆" : "💫"}</div>
             <h2 className="text-2xl font-extrabold text-foreground">
-              {won ? "Tu as gagné !" : "Réessaie !"}
+              {won ? "Tu as gagné !" : "Game Over!"}
             </h2>
             <p className="text-lg font-bold text-foreground">Score : {score}</p>
             {caught.length > 0 && (
