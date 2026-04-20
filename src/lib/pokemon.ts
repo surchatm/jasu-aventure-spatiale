@@ -13,6 +13,7 @@ import taupiqueur from "@/assets/pokemon/taupiqueur.png";
 import evoli from "@/assets/pokemon/evoli.png";
 import onix from "@/assets/pokemon/onix.png";
 import tortank from "@/assets/pokemon/tortank.png";
+import sulfura from "@/assets/pokemon/sulfura.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
@@ -40,6 +41,7 @@ export const POKEMONS: PokemonDef[] = [
   { id: "pikachu", name: "Pikachu", image: pikachu, points: 200, rarity: "rare", weight: 8 },
   { id: "dracaufeu", name: "Dracaufeu", image: dracaufeu, points: 300, rarity: "rare", weight: 5 },
   { id: "tortank", name: "Tortank", image: tortank, points: 350, rarity: "rare", weight: 4 },
+  { id: "sulfura", name: "Sulfura", image: sulfura, points: 450, rarity: "legendary", weight: 3 },
   { id: "mewto", name: "Mewto", image: mewto, points: 500, rarity: "legendary", weight: 3 },
 ];
 
