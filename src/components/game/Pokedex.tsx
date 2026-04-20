@@ -24,6 +24,8 @@ function PokeCard({ pokemon, caught }: { pokemon: PokemonDef; caught: boolean })
       : pokemon.rarity === "rare"
       ? "var(--accent)"
       : "var(--rainbow)";
+  const pointsColor =
+    pokemon.rarity === "common" ? "var(--foreground)" : borderColor;
 
   return (
     <div
@@ -49,7 +51,7 @@ function PokeCard({ pokemon, caught }: { pokemon: PokemonDef; caught: boolean })
         {caught ? pokemon.name : "???"}
       </div>
       {caught && (
-        <div className="text-[10px] font-semibold sm:text-[11px]" style={{ color: borderColor }}>
+        <div className="text-[10px] font-semibold sm:text-[11px]" style={{ color: pointsColor }}>
           {pokemon.points} pts
         </div>
       )}
