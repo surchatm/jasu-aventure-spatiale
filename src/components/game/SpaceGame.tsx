@@ -364,7 +364,7 @@ export function SpaceGame() {
 
     return () => clearInterval(interval);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [phase]);
+  }, [phase, legendaryReveal]);
 
   function handleHit(it: FallingItem) {
     idRef.current += 1;
