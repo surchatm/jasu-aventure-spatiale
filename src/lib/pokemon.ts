@@ -13,6 +13,7 @@ import taupiqueur from "@/assets/pokemon/taupiqueur.png";
 import evoli from "@/assets/pokemon/evoli.png";
 import onix from "@/assets/pokemon/onix.png";
 import tortank from "@/assets/pokemon/tortank.png";
+import sulfura from "@/assets/pokemon/sulfura.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
