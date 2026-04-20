@@ -268,8 +268,8 @@ export function SpaceGame() {
       // Spawn item — every +1000 score increases pokeball spawn rate
       const tier = Math.floor(scoreRef.current / 1000);
       const spawnChance = 0.06 + difficulty * 0.02;
-      // Pokeball threshold lowers with tier: 0.003 base + 0.0025 per tier (capped)
-      const pokeballChance = Math.min(0.05, 0.003 + tier * 0.0025);
+      // Pokeball threshold lowers with tier: 0.006 base + 0.0025 per tier (capped)
+      const pokeballChance = Math.min(0.05, 0.006 + tier * 0.0025);
       const pokeballThreshold = 1 - pokeballChance;
       let newItem: FallingItem | null = null;
       if (Math.random() < spawnChance) {
