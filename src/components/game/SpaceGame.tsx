@@ -784,6 +784,7 @@ export function SpaceGame() {
                   onClick={() => {
                     setNeedsName(false);
                     setPendingName("");
+                    setPhase("start");
                   }}
                   className="h-9 w-full rounded-full text-sm font-semibold text-muted-foreground"
                 >
