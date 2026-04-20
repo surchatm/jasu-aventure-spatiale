@@ -1,5 +1,8 @@
 // Tiny Web Audio sound effects — no asset files, instant load
+import legendaryCaptureUrl from "@/assets/sfx/legendary-capture.mp3";
+
 let ctx: AudioContext | null = null;
+let legendaryAudio: HTMLAudioElement | null = null;
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -52,5 +55,18 @@ export const sfx = {
   },
   pokemon: () => {
     [659, 784, 988, 1318].forEach((f, i) => setTimeout(() => tone(f, 0.12, "square", 0.18), i * 80));
+  },
+  legendary: () => {
+    if (typeof window === "undefined") return;
+    try {
+      if (!legendaryAudio) {
+        legendaryAudio = new Audio(legendaryCaptureUrl);
+        legendaryAudio.volume = 0.7;
+      }
+      legendaryAudio.currentTime = 0;
+      void legendaryAudio.play();
+    } catch {
+      // ignore
+    }
   },
 };
