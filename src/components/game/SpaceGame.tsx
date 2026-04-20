@@ -671,10 +671,10 @@ export function SpaceGame() {
 
         {/* Start overlay */}
         {phase === "start" && (
-          <div className="absolute inset-0 z-40 flex flex-col items-center justify-start gap-2 overflow-y-auto bg-background/70 p-4 text-center backdrop-blur-sm sm:justify-center sm:gap-3 sm:p-6">
-            <div className="text-4xl animate-float-slow sm:text-5xl">🚀</div>
-            <h2 className="text-xl font-extrabold text-foreground sm:text-2xl">Prêt, astronaute ?</h2>
-            <ul className="space-y-0.5 text-xs text-muted-foreground sm:space-y-1 sm:text-sm">
+          <div className="absolute inset-0 z-40 flex flex-col items-center justify-start gap-1.5 overflow-y-auto bg-background/70 p-3 text-center backdrop-blur-sm sm:justify-center sm:gap-2 sm:p-4">
+            <div className="text-3xl animate-float-slow sm:text-4xl">🚀</div>
+            <h2 className="text-lg font-extrabold text-foreground sm:text-xl">Prêt, astronaute ?</h2>
+            <ul className="space-y-0.5 text-xs text-muted-foreground sm:text-sm">
               <li>⭐ Attrape les étoiles pour marquer</li>
               <li>☄️ Évite les astéroïdes</li>
               <li>🌈 Arc-en-ciel = points x2 !</li>
