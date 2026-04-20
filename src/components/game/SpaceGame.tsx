@@ -10,6 +10,15 @@ import { loadScores, qualifiesForTop, saveScore, subscribeToLeaderboard, type Sc
 import { rollPokemon, type PokemonDef } from "@/lib/pokemon";
 import { useMusic } from "@/hooks/use-music";
 import pokeballImg from "@/assets/pokeball.png";
+import planetEarth from "@/assets/planet/Earth.png";
+import planetJupiter from "@/assets/planet/Jupiter.png";
+import planetMars from "@/assets/planet/Mars.png";
+import planetMercury from "@/assets/planet/Mercury.png";
+import planetNeptune from "@/assets/planet/Neptune.png";
+import planetPluto from "@/assets/planet/Pluto.png";
+import planetSaturn from "@/assets/planet/Saturn.png";
+import planetUranus from "@/assets/planet/Uranus.png";
+import planetVenus from "@/assets/planet/Venus.png";
 
 type Phase = "start" | "playing" | "over";
 type ItemKind = "star" | "asteroid" | "rainbow" | "shield" | "pokeball";
@@ -46,11 +55,21 @@ const ITEM_VISUAL: Record<Exclude<ItemKind, "pokeball">, { emoji: string; size: 
 };
 const POKEBALL_SIZE = 42;
 
-const PLANET_EMOJIS = ["🪐", "🌍", "🌕", "🔵"];
+const PLANET_IMAGES = [
+  planetEarth,
+  planetJupiter,
+  planetMars,
+  planetMercury,
+  planetNeptune,
+  planetPluto,
+  planetSaturn,
+  planetUranus,
+  planetVenus,
+];
 
 interface Planet {
   id: number;
-  emoji: string;
+  image: string;
   x: number;
   y: number;
   size: number;
@@ -268,10 +287,10 @@ export function SpaceGame() {
         idRef.current += 1;
         const newPlanet: Planet = {
           id: idRef.current,
-          emoji: PLANET_EMOJIS[Math.floor(Math.random() * PLANET_EMOJIS.length)],
+          image: PLANET_IMAGES[Math.floor(Math.random() * PLANET_IMAGES.length)],
           x: 15 + Math.random() * 70,
           y: 20 + Math.random() * 45,
-          size: 44 + Math.random() * 24,
+          size: 56 + Math.random() * 36,
         };
         setPlanets((p) => {
           const radiusNew = newPlanet.size / 12;
@@ -481,20 +500,21 @@ export function SpaceGame() {
 
         {/* Stationary planets (obstacles) */}
         {planets.map((pl) => (
-          <div
+          <img
             key={pl.id}
-            className="absolute z-10 select-none animate-float-slow"
+            src={pl.image}
+            alt="planet"
+            draggable={false}
+            className="absolute z-10 select-none animate-float-slow pointer-events-none"
             style={{
               left: `${pl.x}%`,
               top: `${pl.y}%`,
-              fontSize: `${pl.size}px`,
-              lineHeight: 1,
+              width: `${pl.size}px`,
+              height: `${pl.size}px`,
               transform: "translate(-50%, -50%)",
               filter: "drop-shadow(0 4px 12px rgba(0,0,0,0.5))",
             }}
-          >
-            {pl.emoji}
-          </div>
+          />
         ))}
 
         {/* Falling items */}
