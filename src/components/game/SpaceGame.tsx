@@ -265,8 +265,8 @@ export function SpaceGame() {
       }
       const px = playerXRef.current;
 
-      // Spawn item — every +500 score increases pokeball spawn rate
-      const tier = Math.floor(scoreRef.current / 500);
+      // Spawn item — every +800 score increases pokeball spawn rate
+      const tier = Math.floor(scoreRef.current / 800);
       const spawnChance = 0.06 + difficulty * 0.02;
       // Pokeball threshold lowers with tier: 0.006 base + 0.0025 per tier (capped)
       const pokeballChance = Math.min(0.05, 0.006 + tier * 0.0025);
@@ -410,7 +410,7 @@ export function SpaceGame() {
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
     } else if (it.kind === "pokeball") {
-      const poke = rollPokemon(Array.from(caughtIdsRef.current), Math.floor(scoreRef.current / 500));
+      const poke = rollPokemon(Array.from(caughtIdsRef.current), Math.floor(scoreRef.current / 800));
       if (!poke) {
         sfx.power();
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Pokédex complet !", color: "var(--rainbow)" }]);
