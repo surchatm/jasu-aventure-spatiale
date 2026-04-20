@@ -778,6 +778,17 @@ export function SpaceGame() {
                 >
                   💾 Enregistrer
                 </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setNeedsName(false);
+                    setPendingName("");
+                  }}
+                  className="h-9 w-full rounded-full text-sm font-semibold text-muted-foreground"
+                >
+                  Ignorer
+                </Button>
               </form>
             ) : (
               <>
