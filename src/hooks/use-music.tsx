@@ -5,6 +5,8 @@ const TRACKS = ["/music/track1.mp3", "/music/track2.mp3", "/music/track3.mp3", "
 export function useMusic() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const indexRef = useRef(0);
+  const baseVolumeRef = useRef(0.35);
+  const duckTimersRef = useRef<number[]>([]);
   const [muted, setMuted] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     return localStorage.getItem("space-music-muted") === "1";
