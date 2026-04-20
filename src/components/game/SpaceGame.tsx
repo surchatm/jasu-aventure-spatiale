@@ -292,7 +292,7 @@ export function SpaceGame() {
           const usedImages = new Set(p.map((pl) => pl.image));
           const available = PLANET_IMAGES.filter((img) => !usedImages.has(img));
           if (available.length === 0) return p;
-          const size = 56 + Math.random() * 36;
+          const size = 75 + Math.random() * 17;
           const radiusNew = size / 12;
           const MIN_GAP = 12; // extra padding between planets (in % units)
           // Try several positions to find one that isn't too close to existing planets
