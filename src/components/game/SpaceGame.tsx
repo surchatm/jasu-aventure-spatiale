@@ -46,7 +46,7 @@ interface Popup {
 const STAGE_W = 100;
 const STAGE_H = 100;
 const PLAYER_W = 12; // percent
-const PLAYER_Y = 86; // percent from top
+const PLAYER_Y = 78; // percent from top (leaves room below for finger control on mobile)
 const WIN_SCORE = 100000;
 const TICK_MS = 30;
 
@@ -462,7 +462,7 @@ export function SpaceGame() {
 
   return (
     <div
-      className="flex min-h-screen flex-col items-center justify-center gap-2 p-2 sm:gap-4 sm:p-4 select-none"
+      className="flex min-h-screen flex-col items-center justify-start gap-1 px-2 pt-1 pb-2 sm:justify-center sm:gap-4 sm:p-4 select-none"
       style={{
         background: "var(--gradient-space)",
         WebkitUserSelect: "none",
