@@ -430,6 +430,7 @@ export function SpaceGame() {
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
         if (poke.rarity === "legendary") {
           sfx.legendary();
+          music.duck(3000, 0.05, 250);
           setLegendaryReveal({ pokemon: poke, points });
           setTimeout(() => setLegendaryReveal(null), 3500);
         }
