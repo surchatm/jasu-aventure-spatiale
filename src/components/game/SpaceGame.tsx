@@ -720,7 +720,7 @@ export function SpaceGame() {
           >
             <div className="text-5xl">{won ? "🏆" : "💫"}</div>
             <h2 className="text-2xl font-extrabold text-foreground">
-              {won ? "Tu as gagné !" : "Réessaie !"}
+              {won ? "Tu as gagné !" : "Game Over!"}
             </h2>
             <p className="text-lg font-bold text-foreground">Score : {score}</p>
             {caught.length > 0 && (
@@ -777,6 +777,17 @@ export function SpaceGame() {
                   style={{ background: "var(--gradient-primary)", color: "var(--primary-foreground)" }}
                 >
                   💾 Enregistrer
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => {
+                    setNeedsName(false);
+                    setPendingName("");
+                  }}
+                  className="h-9 w-full rounded-full text-sm font-semibold text-muted-foreground"
+                >
+                  Ignorer
                 </Button>
               </form>
             ) : (
