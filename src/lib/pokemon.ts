@@ -57,14 +57,22 @@ export const POKEMONS: PokemonDef[] = [
   { id: "rayquaza", name: "Rayquaza", image: rayquaza, points: 600, rarity: "legendary", weight: 2 },
 ];
 
-export function rollPokemon(excludeIds: string[] = []): PokemonDef | null {
+export function rollPokemon(excludeIds: string[] = [], rarityTier: number = 0): PokemonDef | null {
   const pool = POKEMONS.filter((p) => !excludeIds.includes(p.id));
   if (pool.length === 0) return null;
-  const total = pool.reduce((s, p) => s + p.weight, 0);
+  // Each tier (per +1000 score) boosts rare x1.25 and legendary x1.6, capped at tier 8
+  const t = Math.max(0, Math.min(8, rarityTier));
+  const rareMult = Math.pow(1.25, t);
+  const legendMult = Math.pow(1.6, t);
+  const weighted = pool.map((p) => ({
+    p,
+    w: p.weight * (p.rarity === "legendary" ? legendMult : p.rarity === "rare" ? rareMult : 1),
+  }));
+  const total = weighted.reduce((s, x) => s + x.w, 0);
   let r = Math.random() * total;
-  for (const p of pool) {
-    r -= p.weight;
-    if (r <= 0) return p;
+  for (const x of weighted) {
+    r -= x.w;
+    if (r <= 0) return x.p;
   }
   return pool[0];
 }
