@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-const TRACKS = ["/music/track1.mp3", "/music/track2.mp3", "/music/track3.mp3"];
+const TRACKS = ["/music/track1.mp3", "/music/track2.mp3", "/music/track3.mp3", "/music/track4.mp3"];
 
 export function useMusic() {
   const audioRef = useRef<HTMLAudioElement | null>(null);
