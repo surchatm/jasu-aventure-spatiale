@@ -11,6 +11,7 @@ import { rollPokemon, loadCaughtIds, saveCaughtIds, type PokemonDef } from "@/li
 import { Pokedex } from "./Pokedex";
 import { BookOpen } from "lucide-react";
 import { useMusic } from "@/hooks/use-music";
+import { useSfxMute } from "@/hooks/use-sfx-mute";
 import pokeballImg from "@/assets/pokeball.png";
 import planetEarth from "@/assets/planet/Earth.png";
 import planetJupiter from "@/assets/planet/Jupiter.png";
@@ -99,6 +100,7 @@ export function SpaceGame() {
   const [caughtIdsAll, setCaughtIdsAll] = useState<Set<string>>(() => loadCaughtIds());
   const caughtCountRef = useRef(0);
   const music = useMusic();
+  const sfxMute = useSfxMute();
 
   useEffect(() => {
     let active = true;
@@ -497,9 +499,19 @@ export function SpaceGame() {
               type="button"
               onClick={music.toggleMute}
               aria-label={music.muted ? "Activer la musique" : "Couper la musique"}
+              title={music.muted ? "Activer la musique" : "Couper la musique"}
               className="rounded-full bg-card/80 px-2 py-1 text-base backdrop-blur transition hover:scale-110"
             >
               {music.muted ? "🔇" : "🔊"}
+            </button>
+            <button
+              type="button"
+              onClick={sfxMute.toggleMute}
+              aria-label={sfxMute.muted ? "Activer les effets sonores" : "Couper les effets sonores"}
+              title={sfxMute.muted ? "Activer les effets sonores" : "Couper les effets sonores"}
+              className="rounded-full bg-card/80 px-2 py-1 text-xs font-bold text-card-foreground backdrop-blur transition hover:scale-110"
+            >
+              FX {sfxMute.muted ? "🔇" : "🔊"}
             </button>
             <div className="flex gap-1">
               {Array.from({ length: 3 }).map((_, i) => (

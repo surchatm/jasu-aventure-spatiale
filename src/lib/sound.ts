@@ -3,6 +3,32 @@ import legendaryCaptureUrl from "@/assets/sfx/legendary-capture.mp3";
 
 let ctx: AudioContext | null = null;
 let legendaryAudio: HTMLAudioElement | null = null;
+let muted: boolean = (() => {
+  if (typeof window === "undefined") return false;
+  return localStorage.getItem("space-sfx-muted") === "1";
+})();
+
+const listeners = new Set<(m: boolean) => void>();
+
+export function isSfxMuted() {
+  return muted;
+}
+
+export function setSfxMuted(next: boolean) {
+  muted = next;
+  if (typeof window !== "undefined") {
+    localStorage.setItem("space-sfx-muted", next ? "1" : "0");
+  }
+  if (next && legendaryAudio) {
+    legendaryAudio.pause();
+  }
+  listeners.forEach((l) => l(next));
+}
+
+export function subscribeSfxMuted(cb: (m: boolean) => void) {
+  listeners.add(cb);
+  return () => listeners.delete(cb);
+}
 
 function getCtx(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -15,6 +41,7 @@ function getCtx(): AudioContext | null {
 }
 
 function tone(freq: number, duration: number, type: OscillatorType = "sine", volume = 0.15) {
+  if (muted) return;
   const c = getCtx();
   if (!c) return;
   const osc = c.createOscillator();
@@ -58,6 +85,7 @@ export const sfx = {
   },
   legendary: () => {
     if (typeof window === "undefined") return;
+    if (muted) return;
     try {
       if (!legendaryAudio) {
         legendaryAudio = new Audio(legendaryCaptureUrl);
