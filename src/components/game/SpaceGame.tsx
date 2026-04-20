@@ -410,7 +410,7 @@ export function SpaceGame() {
       setShielded(true);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Bouclier !", color: "var(--shield)" }]);
     } else if (it.kind === "pokeball") {
-      const poke = rollPokemon(Array.from(caughtIdsRef.current), Math.floor(scoreRef.current / 1000));
+      const poke = rollPokemon(Array.from(caughtIdsRef.current), Math.floor(scoreRef.current / 500));
       if (!poke) {
         sfx.power();
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "Pokédex complet !", color: "var(--rainbow)" }]);
