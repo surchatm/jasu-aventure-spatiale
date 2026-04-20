@@ -46,7 +46,7 @@ interface Popup {
 const STAGE_W = 100;
 const STAGE_H = 100;
 const PLAYER_W = 12; // percent
-const PLAYER_Y = 76; // percent from top (stage is taller on mobile, so this keeps the shuttle visually centered while leaving finger room below)
+const PLAYER_Y = 86; // percent from top
 const WIN_SCORE = 100000;
 const TICK_MS = 30;
 
@@ -480,7 +480,7 @@ export function SpaceGame() {
 
       <div
         ref={stageRef}
-        className="relative aspect-[3/5] sm:aspect-[3/4] w-full max-w-md max-h-[82vh] sm:max-h-none overflow-hidden rounded-3xl border-2 touch-none select-none"
+        className="relative aspect-[2/3] sm:aspect-[3/4] w-full max-w-md max-h-[82vh] sm:max-h-none overflow-hidden rounded-3xl border-2 touch-none select-none"
         style={{
           background: "var(--gradient-space)",
           borderColor: "var(--border)",
