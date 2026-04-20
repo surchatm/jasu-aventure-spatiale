@@ -651,8 +651,9 @@ export function SpaceGame() {
             <p className="text-lg font-bold text-foreground">Score : {score}</p>
             {caught.length > 0 && (
               <div className="flex flex-col items-center gap-2">
-                <p className="text-sm font-semibold" style={{ color: "var(--accent)" }}>
-                  🔴 {caughtCountRef.current} Pokémon attrapé{caughtCountRef.current > 1 ? "s" : ""}
+                <p className="flex items-center gap-1.5 text-sm font-semibold" style={{ color: "var(--accent)" }}>
+                  <img src={pokeballImg} alt="" aria-hidden="true" className="h-4 w-4 inline-block" draggable={false} />
+                  <span>{caughtCountRef.current} Pokémon attrapé{caughtCountRef.current > 1 ? "s" : ""}</span>
                 </p>
                 <div className="flex flex-wrap justify-center gap-1">
                   {caught.map((c) => (
