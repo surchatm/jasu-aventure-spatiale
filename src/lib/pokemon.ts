@@ -16,6 +16,10 @@ import tortank from "@/assets/pokemon/tortank.png";
 import sulfura from "@/assets/pokemon/sulfura.png";
 import rayquaza from "@/assets/pokemon/rayquaza.png";
 import blizzeval from "@/assets/pokemon/blizzeval.png";
+import ectoplasma from "@/assets/pokemon/ectoplasma.png";
+import ronflex from "@/assets/pokemon/ronflex.png";
+import abra from "@/assets/pokemon/abra.png";
+import noctali from "@/assets/pokemon/noctali.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
@@ -34,7 +38,11 @@ export const POKEMONS: PokemonDef[] = [
   { id: "taupiqueur", name: "Taupiqueur", image: taupiqueur, points: 70, rarity: "common", weight: 22 },
   { id: "bulbizarre", name: "Bulbizarre", image: bulbizarre, points: 80, rarity: "common", weight: 20 },
   { id: "evoli", name: "Évoli", image: evoli, points: 90, rarity: "common", weight: 18 },
+  { id: "abra", name: "Abra", image: abra, points: 90, rarity: "common", weight: 16 },
   { id: "tadmorv", name: "Tadmorv", image: tadmorv, points: 90, rarity: "common", weight: 15 },
+  { id: "noctali", name: "Noctali", image: noctali, points: 130, rarity: "rare", weight: 10 },
+  { id: "ectoplasma", name: "Ectoplasma", image: ectoplasma, points: 220, rarity: "rare", weight: 7 },
+  { id: "ronflex", name: "Ronflex", image: ronflex, points: 250, rarity: "rare", weight: 6 },
   { id: "carabaffe", name: "Carabaffe", image: carabaffe, points: 100, rarity: "rare", weight: 12 },
   { id: "ponyta", name: "Ponyta", image: ponyta, points: 110, rarity: "rare", weight: 11 },
   { id: "ferosinge", name: "Férosinge", image: ferosinge, points: 120, rarity: "rare", weight: 10 },
