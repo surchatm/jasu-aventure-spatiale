@@ -73,5 +73,38 @@ export function useMusic() {
     });
   }, []);
 
-  return { muted, playing, play, stop, toggleMute };
+  const duck = useCallback((durationMs = 3000, duckedVolume = 0.05, fadeMs = 250) => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    // Clear any pending fade timers
+    duckTimersRef.current.forEach((t) => window.clearTimeout(t));
+    duckTimersRef.current = [];
+
+    const base = baseVolumeRef.current;
+    const steps = 10;
+    const stepMs = Math.max(10, Math.floor(fadeMs / steps));
+
+    // Fade down
+    for (let i = 1; i <= steps; i++) {
+      const t = window.setTimeout(() => {
+        if (!audioRef.current) return;
+        const v = base + (duckedVolume - base) * (i / steps);
+        audioRef.current.volume = Math.max(0, Math.min(1, v));
+      }, stepMs * i);
+      duckTimersRef.current.push(t);
+    }
+
+    // Fade back up after duration
+    const fadeUpStart = fadeMs + durationMs;
+    for (let i = 1; i <= steps; i++) {
+      const t = window.setTimeout(() => {
+        if (!audioRef.current) return;
+        const v = duckedVolume + (base - duckedVolume) * (i / steps);
+        audioRef.current.volume = Math.max(0, Math.min(1, v));
+      }, fadeUpStart + stepMs * i);
+      duckTimersRef.current.push(t);
+    }
+  }, []);
+
+  return { muted, playing, play, stop, toggleMute, duck };
 }
