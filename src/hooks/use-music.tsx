@@ -59,6 +59,12 @@ export function useMusic() {
         if (next) {
           audio.pause();
           setPlaying(false);
+        } else {
+          if (!audio.src) {
+            indexRef.current = Math.floor(Math.random() * TRACKS.length);
+            audio.src = TRACKS[indexRef.current];
+          }
+          audio.play().then(() => setPlaying(true)).catch(() => {});
         }
       }
       return next;
