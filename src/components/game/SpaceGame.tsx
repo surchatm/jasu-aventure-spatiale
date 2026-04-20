@@ -421,6 +421,10 @@ export function SpaceGame() {
           return next;
         });
         setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: `${poke.name} +${points} !`, color: "var(--rainbow)" }]);
+        if (poke.rarity === "legendary") {
+          setLegendaryReveal({ pokemon: poke, points });
+          setTimeout(() => setLegendaryReveal(null), 3500);
+        }
       }
     } else if (it.kind === "asteroid") {
       if (shieldedRef.current) {
