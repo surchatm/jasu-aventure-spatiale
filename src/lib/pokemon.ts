@@ -27,6 +27,7 @@ import porygon from "@/assets/pokemon/porygon.png";
 import magicarpe from "@/assets/pokemon/magicarpe.png";
 import ethernatos from "@/assets/pokemon/ethernatos.png";
 import amovenus from "@/assets/pokemon/amovenus.png";
+import magireve from "@/assets/pokemon/magireve.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
@@ -61,6 +62,7 @@ export const POKEMONS: PokemonDef[] = [
   { id: "machopeur", name: "Machopeur", image: machopeur, points: 150, rarity: "rare", weight: 9 },
   { id: "onix", name: "Onix", image: onix, points: 180, rarity: "rare", weight: 8 },
   { id: "pikachu", name: "Pikachu", image: pikachu, points: 200, rarity: "rare", weight: 8 },
+  { id: "magireve", name: "Magirêve", image: magireve, points: 240, rarity: "rare", weight: 7 },
   { id: "dracaufeu", name: "Dracaufeu", image: dracaufeu, points: 300, rarity: "rare", weight: 5 },
   { id: "tortank", name: "Tortank", image: tortank, points: 350, rarity: "rare", weight: 4 },
   { id: "sulfura", name: "Sulfura", image: sulfura, points: 450, rarity: "legendary", weight: 3 },
