@@ -20,6 +20,11 @@ import ectoplasma from "@/assets/pokemon/ectoplasma.png";
 import ronflex from "@/assets/pokemon/ronflex.png";
 import abra from "@/assets/pokemon/abra.png";
 import noctali from "@/assets/pokemon/noctali.png";
+import psychokwak from "@/assets/pokemon/psychokwak.png";
+import minidraco from "@/assets/pokemon/minidraco.png";
+import kabuto from "@/assets/pokemon/kabuto.png";
+import porygon from "@/assets/pokemon/porygon.png";
+import magicarpe from "@/assets/pokemon/magicarpe.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
@@ -40,6 +45,11 @@ export const POKEMONS: PokemonDef[] = [
   { id: "evoli", name: "Évoli", image: evoli, points: 90, rarity: "common", weight: 18 },
   { id: "abra", name: "Abra", image: abra, points: 90, rarity: "common", weight: 16 },
   { id: "tadmorv", name: "Tadmorv", image: tadmorv, points: 90, rarity: "common", weight: 15 },
+  { id: "magicarpe", name: "Magicarpe", image: magicarpe, points: 40, rarity: "common", weight: 26 },
+  { id: "psychokwak", name: "Psykokwak", image: psychokwak, points: 70, rarity: "common", weight: 20 },
+  { id: "minidraco", name: "Minidraco", image: minidraco, points: 95, rarity: "common", weight: 16 },
+  { id: "kabuto", name: "Kabuto", image: kabuto, points: 85, rarity: "common", weight: 18 },
+  { id: "porygon", name: "Porygon", image: porygon, points: 100, rarity: "common", weight: 14 },
   { id: "noctali", name: "Noctali", image: noctali, points: 130, rarity: "rare", weight: 10 },
   { id: "ectoplasma", name: "Ectoplasma", image: ectoplasma, points: 220, rarity: "rare", weight: 7 },
   { id: "ronflex", name: "Ronflex", image: ronflex, points: 250, rarity: "rare", weight: 6 },
