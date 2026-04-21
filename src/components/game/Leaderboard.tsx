@@ -49,6 +49,7 @@ export function Leaderboard({
                     {visible.map((id, idx) => {
                       const p = POKE_BY_ID.get(id);
                       if (!p) return null;
+                      const isLegendary = p.rarity === "legendary";
                       return (
                         <img
                           key={`${id}-${idx}`}
@@ -57,7 +58,10 @@ export function Leaderboard({
                           loading="lazy"
                           decoding="async"
                           draggable={false}
-                          className="h-5 w-5 rounded-full bg-card/80 object-contain ring-1 ring-border/60"
+                          className={`h-5 w-5 rounded-full bg-card/80 object-contain ring-1 ${
+                            isLegendary ? "ring-2 animate-glow-pulse" : "ring-border/60"
+                          }`}
+                          style={isLegendary ? { borderColor: "var(--rainbow)", boxShadow: "0 0 0 1px var(--rainbow)" } : undefined}
                           title={p.name}
                         />
                       );
