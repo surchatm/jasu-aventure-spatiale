@@ -59,9 +59,8 @@ export function Leaderboard({
                           decoding="async"
                           draggable={false}
                           className={`h-5 w-5 rounded-full bg-card/80 object-contain ring-1 ${
-                            isLegendary ? "ring-2 animate-glow-pulse" : "ring-border/60"
+                            isLegendary ? "animate-glow-pulse-soft ring-[var(--rainbow)]" : "ring-border/60"
                           }`}
-                          style={isLegendary ? { borderColor: "var(--rainbow)", boxShadow: "0 0 0 1px var(--rainbow)" } : undefined}
                           title={p.name}
                         />
                       );
