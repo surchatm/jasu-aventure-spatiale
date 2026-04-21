@@ -25,6 +25,7 @@ import minidraco from "@/assets/pokemon/minidraco.png";
 import kabuto from "@/assets/pokemon/kabuto.png";
 import porygon from "@/assets/pokemon/porygon.png";
 import magicarpe from "@/assets/pokemon/magicarpe.png";
+import ethernatos from "@/assets/pokemon/ethernatos.png";
 
 export type Rarity = "common" | "rare" | "legendary";
 
@@ -65,6 +66,7 @@ export const POKEMONS: PokemonDef[] = [
   { id: "mewto", name: "Mewto", image: mewto, points: 500, rarity: "legendary", weight: 3 },
   { id: "blizzeval", name: "Blizzeval", image: blizzeval, points: 550, rarity: "legendary", weight: 2 },
   { id: "rayquaza", name: "Rayquaza", image: rayquaza, points: 600, rarity: "legendary", weight: 2 },
+  { id: "ethernatos", name: "Ethernatos", image: ethernatos, points: 650, rarity: "legendary", weight: 2 },
 ];
 
 export function rollPokemon(excludeIds: string[] = [], rarityTier: number = 0): PokemonDef | null {
