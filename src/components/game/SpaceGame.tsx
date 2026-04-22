@@ -127,6 +127,7 @@ export function SpaceGame() {
   const caughtIdsRef = useRef<Set<string>>(new Set());
   const playerXRef = useRef(50);
   const doubledRef = useRef(false);
+  const doubledTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shieldedRef = useRef(false);
   const scoreRef = useRef(0);
 
@@ -402,7 +403,12 @@ export function SpaceGame() {
       sfx.power();
       doubledRef.current = true;
       setDoubled(true);
-      setTimeout(() => { doubledRef.current = false; setDoubled(false); }, 5000);
+      if (doubledTimeoutRef.current) clearTimeout(doubledTimeoutRef.current);
+      doubledTimeoutRef.current = setTimeout(() => {
+        doubledRef.current = false;
+        setDoubled(false);
+        doubledTimeoutRef.current = null;
+      }, 5000);
       setPopups((p) => [...p, { id: popupId, x: it.x, y: it.y, text: "x2 !", color: "var(--rainbow)" }]);
     } else if (it.kind === "shield") {
       sfx.power();
